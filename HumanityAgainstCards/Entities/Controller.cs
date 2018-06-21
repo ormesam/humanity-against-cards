@@ -7,7 +7,7 @@ namespace HumanityAgainstCards.Entities
     public sealed class Controller
     {
         private static Controller instance;
-        private static readonly object _lock;
+        private static readonly object _lock = new object();
 
         private IDictionary<string, Game> games;
         private Random random;
@@ -50,6 +50,8 @@ namespace HumanityAgainstCards.Entities
 
             Game game = new Game(roomCode);
             game.AddPlayer(connectionId);
+
+            games.Add(roomCode, game);
 
             return roomCode;
         }
