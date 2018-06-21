@@ -2,7 +2,7 @@
 
 namespace HumanityAgainstCards.Hubs
 {
-    public class GameHub : Hub
+    public class GameHub : Hub<IGameHub>
     {
     }
 }
