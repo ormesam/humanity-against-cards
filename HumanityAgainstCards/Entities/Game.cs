@@ -1,12 +1,23 @@
-﻿namespace HumanityAgainstCards.Entities
+﻿using System;
+using System.Collections.Generic;
+
+namespace HumanityAgainstCards.Entities
 {
     public class Game
     {
-        private string host;
+        private string roomCode;
+        private IList<string> players;
 
-        public Game(string host)
+        public Game(string roomCode)
         {
-            this.host = host;
+            players = new List<string>();
+
+            this.roomCode = roomCode;
+        }
+
+        public void AddPlayer(string connectionId)
+        {
+            players.Add(connectionId);
         }
     }
 }

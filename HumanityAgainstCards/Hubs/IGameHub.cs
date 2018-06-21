@@ -5,7 +5,6 @@ namespace HumanityAgainstCards.Hubs
     public interface IGameHub
     {
         Task JoinGroup(string roomCode);
-
-        Task LeaveGroup(string roomCode);
+        Task CreateGroup();
     }
 }

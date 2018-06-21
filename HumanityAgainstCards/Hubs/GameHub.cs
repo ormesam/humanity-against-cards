@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace HumanityAgainstCards.Hubs
 {
-    public class GameHub : Hub<IGameHub>
+    public class GameHub : Hub<IGameHub>, IGameHub
     {
         public async Task JoinGroup(string roomCode)
         {
