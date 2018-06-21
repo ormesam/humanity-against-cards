@@ -89,6 +89,7 @@
   <ItemGroup>
     <None Include="scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="index.html" />
+    <Content Include="scripts\game.js" />
     <Content Include="scripts\jquery-3.3.1.js" />
     <Content Include="scripts\jquery-3.3.1.min.js" />
     <Content Include="scripts\jquery-3.3.1.slim.js" />
@@ -99,6 +100,8 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Controller.cs" />
+    <Compile Include="Entities\Game.cs" />
     <Compile Include="Hubs\GameHub.cs" />
     <Compile Include="Hubs\IGameHub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -115,6 +118,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
