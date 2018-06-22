@@ -100,8 +100,12 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Card.cs" />
+    <Compile Include="Entities\CardGenerator.cs" />
     <Compile Include="Entities\Controller.cs" />
+    <Compile Include="Entities\Extensions.cs" />
     <Compile Include="Entities\Game.cs" />
+    <Compile Include="Entities\Player.cs" />
     <Compile Include="Hubs\GameHub.cs" />
     <Compile Include="Hubs\IClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

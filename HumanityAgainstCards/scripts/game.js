@@ -1,25 +1,38 @@
 ﻿$(function () {
     var gameHub = $.connection.gameHub;
 
+    function log(message) {
+        $("#feed").append("<p>" + message + "</p>");
+        console.log(message);
+    }
+
     gameHub.client.playerJoined = function (name) {
-        console.log("Player joined: " + name);
-        $("#feed").append("<p>" + name + " joined!</p>")
+        log("Player joined: " + name);
+    };
+
+    gameHub.client.roomCodeChanged = function (roomCode) {
+        log("Room code changed: " + roomCode);
+        $("#room-code").text(roomCode);
     };
 
     $.connection.hub.start().done(function () {
         console.log("Connection succeeded...");
 
         $("#create-game").click(function () {
-            gameHub.server.createGame().done(function (roomCode) {
-                alert("Your room code is: " + roomCode);
-            });
+            var playerName = prompt("Enter a name:", "");
+
+            if (playerName === "") {
+                return;
+            }
+
+            gameHub.server.createGame(playerName);
         })
 
         $("#join-game").click(function () {
             var roomCode = prompt("Enter room code:", "");
             var playerName = prompt("Enter a name:", "");
 
-            if (roomCode === "" || playerName == "") {
+            if (roomCode === "" || playerName === "") {
                 return;
             }
 

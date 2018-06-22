@@ -8,20 +8,22 @@ namespace HumanityAgainstCards.Hubs
     {
         public async Task JoinGame(string roomCode, string name)
         {
-            Controller.Instance.JoinGroup(Context.ConnectionId, roomCode);
+            Controller.Instance.JoinGroup(Context.ConnectionId, roomCode, name);
 
             await Groups.Add(Context.ConnectionId, roomCode);
+
+            Clients.User(Context.ConnectionId).RoomCodeChanged(roomCode);
 
             Clients.Group(roomCode).PlayerJoined(name);
         }
 
-        public async Task<string> CreateGame()
+        public async Task CreateGame(string hostName)
         {
-            string roomCode = Controller.Instance.CreateGroup(Context.ConnectionId);
+            string roomCode = Controller.Instance.CreateGroup(Context.ConnectionId, hostName);
 
             await Groups.Add(Context.ConnectionId, roomCode);
 
-            return roomCode;
+            Clients.Group(roomCode).RoomCodeChanged(roomCode);
         }
     }
 }

@@ -8,13 +8,13 @@ namespace HumanityAgainstCards.Entities
     {
         private static Controller instance;
         private static readonly object _lock = new object();
-
-        private IDictionary<string, Game> games;
         private Random random;
+
+        public IDictionary<string, Game> Games { get; private set; }
 
         private Controller()
         {
-            games = new Dictionary<string, Game>();
+            Games = new Dictionary<string, Game>();
             random = new Random();
         }
 
@@ -34,7 +34,7 @@ namespace HumanityAgainstCards.Entities
 
         #region Join / Create
 
-        public string CreateGroup(string connectionId)
+        public string CreateGroup(string connectionId, string hostName)
         {
             string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -43,24 +43,24 @@ namespace HumanityAgainstCards.Entities
               .ToArray());
 
             // Don't want to create a group with a duplicate room code
-            if (games.ContainsKey(roomCode))
+            if (Games.ContainsKey(roomCode))
             {
-                return CreateGroup(connectionId);
+                return CreateGroup(connectionId, hostName);
             }
 
             Game game = new Game(roomCode);
-            game.AddPlayer(connectionId);
+            game.AddPlayer(connectionId, hostName);
 
-            games.Add(roomCode, game);
+            Games.Add(roomCode, game);
 
             return roomCode;
         }
 
-        public void JoinGroup(string connectionId, string roomCode)
+        public void JoinGroup(string connectionId, string roomCode, string name)
         {
-            if (games.ContainsKey(roomCode))
+            if (Games.ContainsKey(roomCode))
             {
-                games[roomCode].AddPlayer(connectionId);
+                Games[roomCode].AddPlayer(connectionId, name);
             }
             else
             {
