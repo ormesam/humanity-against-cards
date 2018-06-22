@@ -4,13 +4,15 @@ using System.Threading.Tasks;
 
 namespace HumanityAgainstCards.Hubs
 {
-    public class GameHub : Hub<IGameHub>, IGameHub
+    public class GameHub : Hub<IClient>
     {
-        public async Task JoinGame(string roomCode)
+        public async Task JoinGame(string roomCode, string name)
         {
             Controller.Instance.JoinGroup(Context.ConnectionId, roomCode);
 
             await Groups.Add(Context.ConnectionId, roomCode);
+
+            Clients.Group(roomCode).PlayerJoined(name);
         }
 
         public async Task<string> CreateGame()
