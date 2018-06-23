@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using HumanityAgainstCards.Hubs;
+using Microsoft.AspNet.SignalR;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace HumanityAgainstCards.Entities
@@ -9,6 +12,7 @@ namespace HumanityAgainstCards.Entities
         private IDictionary<string, Player> players;
         private IList<Card> questionCards;
         private IList<Card> answerCards;
+        private IClient groupHub => GetGroupHub();
 
         public Game(string roomCode)
         {
@@ -42,6 +46,13 @@ namespace HumanityAgainstCards.Entities
             }
 
             players.Add(connectionId, player);
+
+            groupHub.PlayerJoined(name);
+        }
+
+        private IClient GetGroupHub()
+        {
+            return GlobalHost.ConnectionManager.GetHubContext<GameHub, IClient>().Clients.Group(roomCode);
         }
     }
 }

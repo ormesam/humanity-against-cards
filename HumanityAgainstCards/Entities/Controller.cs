@@ -49,8 +49,6 @@ namespace HumanityAgainstCards.Entities
             }
 
             Game game = new Game(roomCode);
-            game.AddPlayer(connectionId, hostName);
-
             Games.Add(roomCode, game);
 
             return roomCode;

@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+﻿using Microsoft.AspNet.SignalR;
 
 namespace HumanityAgainstCards.Hubs
 {
