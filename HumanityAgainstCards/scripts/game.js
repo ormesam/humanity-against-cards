@@ -1,6 +1,6 @@
 ﻿$(function () {
     var gameHub = $.connection.gameHub;
-    var room;
+    var roomCode;
     var currentQuestion;
 
     function log(message) {
@@ -12,10 +12,10 @@
         log("Player joined: " + name);
     };
 
-    gameHub.client.roomCodeChanged = function (roomCode) {
-        log("Room code changed: " + roomCode);
-        $("#room-code").text(roomCode);
-        room = roomCode;
+    gameHub.client.roomCodeChanged = function (code) {
+        log("Room code changed: " + code);
+        $("#room-code").text(code);
+        roomCode = code;
     };
 
     gameHub.client.newQuestion = function (question) {
@@ -61,32 +61,36 @@
                 return;
             }
 
-            gameHub.server.createGame(playerName);
+            gameHub.server.createGame(playerName).then(function () {
+                $(".cover").addClass("hidden");
+            });;
         })
 
         $("#join-game").click(function () {
-            var roomCode = prompt("Enter room code:", "");
+            var code = prompt("Enter room code:", "");
             var playerName = prompt("Enter a name:", "");
 
-            if (roomCode === "" || playerName === "") {
+            if (code === "" || playerName === "") {
                 return;
             }
 
-            gameHub.server.joinGame(roomCode, playerName);
+            gameHub.server.joinGame(code, playerName).then(function () {
+                $(".cover").addClass("hidden");
+            });
         });
 
         $("#start").click(function () {
-            gameHub.server.start(room);
+            gameHub.server.start(roomCode);
         });
 
         $(document).on("click", ".hand-card", function () {
-            gameHub.server.submitCard(room, $(this).text());
+            gameHub.server.submitCard(roomCode, $(this).text());
             console.log("Submitted card: " + $(this).text());
             $(this).addClass("hidden");
         })
 
         $(document).on("click", ".vote-card", function () {
-            gameHub.server.submitVote(room, $(this).text());
+            gameHub.server.submitVote(roomCode, $(this).text());
             console.log("Voted for: " + $(this).text());
             $(this).addClass("hidden");
         })

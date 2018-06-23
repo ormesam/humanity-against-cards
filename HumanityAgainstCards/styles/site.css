@@ -36,3 +36,50 @@
     background-color: black;
     color: white;
 }
+
+.cover {
+    width:100%;
+    height:100%;
+    background-color:white;
+    position:absolute;
+    top:0;
+    left:0;
+}
+
+.login {
+    display: block;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top:20vh;
+}
+
+.btn {
+    padding: 14px 24px;
+    border: 0 none;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius:5px;
+    width:100%;
+    cursor:pointer;
+}
+
+.btn:focus, .btn:active:focus, .btn.active:focus {
+    outline: 0 none;
+}
+
+.btn-create {
+    background: #0099cc;
+    color: #ffffff;
+}
+
+    .btn-create:hover, .btn-create:focus, .btn-create:active, .btn-create.active, .open > .dropdown-toggle.btn-create {
+        background: #33a6cc;
+    }
+
+    .btn-create:active, .btn-create.active {
+        background: #007299;
+        box-shadow: none;
+    }
