@@ -24,11 +24,6 @@ namespace HumanityAgainstCards.Entities
             Points = 0;
         }
 
-        public void PopulateHand(IList<Card> hand)
-        {
-            Hand = hand;
-        }
-
         public void AddToHand(Card card)
         {
             Hand.Add(card);

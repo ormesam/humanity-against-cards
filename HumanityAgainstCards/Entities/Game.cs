@@ -9,6 +9,8 @@ namespace HumanityAgainstCards.Entities
 {
     public class Game
     {
+        private const int numberOfCardsInHand = 10;
+
         private string roomCode;
         private IDictionary<string, Player> players;
         private IList<Card> questionCards;
@@ -55,10 +57,11 @@ namespace HumanityAgainstCards.Entities
             status = GameStatus.Running;
 
             PopulateCards();
-            PopulateHands();
 
             while (questionCards.Any())
             {
+                PopulateHands();
+
                 ShowNext();
 
                 ShowHands();
@@ -71,11 +74,10 @@ namespace HumanityAgainstCards.Entities
         {
             foreach (var player in players)
             {
-                var hand = answerCards.Take(10).ToList();
-                player.Value.PopulateHand(hand);
-
-                foreach (var card in hand)
+                while (player.Value.Hand.Count < numberOfCardsInHand && answerCards.Any())
                 {
+                    var card = answerCards.FirstOrDefault();
+                    player.Value.AddToHand(card);
                     answerCards.Remove(card);
                 }
             }
