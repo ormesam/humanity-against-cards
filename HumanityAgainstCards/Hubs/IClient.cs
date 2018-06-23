@@ -1,5 +1,6 @@
 ﻿using HumanityAgainstCards.Entities;
 using Microsoft.AspNet.SignalR;
+using System.Collections.Generic;
 
 namespace HumanityAgainstCards.Hubs
 {
@@ -8,5 +9,6 @@ namespace HumanityAgainstCards.Hubs
         void PlayerJoined(string name);
         void RoomCodeChanged(string roomCode);
         void NewQuestion(Card question);
+        void ShowHand(IList<Card> hand);
     }
 }

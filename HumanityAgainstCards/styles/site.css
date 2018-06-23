@@ -1,2 +1,5 @@
-﻿body {
+﻿.left{
+    float:left;
+    width:80%;
+    min-height:500px;
 }

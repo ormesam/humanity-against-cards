@@ -21,6 +21,16 @@
         log("New Question: " + question.Value + " (" + question.BlankCount + " blanks)");
     };
 
+    gameHub.client.showHand = function (hand) {
+        $("#hand").html("");
+
+        for (var i = 0; i < hand.length; i++) {
+            var card = $("<p>");
+            card.text(hand[i].Value);
+            $("#hand").append(card);
+        }
+    };
+
     $.connection.hub.start().done(function () {
         console.log("Connection succeeded...");
 

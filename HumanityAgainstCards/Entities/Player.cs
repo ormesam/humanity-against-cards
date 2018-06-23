@@ -1,4 +1,6 @@
-﻿using System;
+﻿using HumanityAgainstCards.Hubs;
+using Microsoft.AspNet.SignalR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,6 +9,8 @@ namespace HumanityAgainstCards.Entities
 {
     public class Player
     {
+        private IClient hub => GetPlayerHub();
+
         public readonly string ConnectionId;
         public readonly string Name;
         public int Points { get; private set; }
@@ -28,6 +32,16 @@ namespace HumanityAgainstCards.Entities
         public void AddToHand(Card card)
         {
             Hand.Add(card);
+        }
+
+        public void ShowHand()
+        {
+            hub.ShowHand(Hand);
+        }
+
+        private IClient GetPlayerHub()
+        {
+            return GlobalHost.ConnectionManager.GetHubContext<GameHub, IClient>().Clients.Client(ConnectionId);
         }
     }
 }

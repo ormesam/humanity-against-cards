@@ -40,22 +40,9 @@ namespace HumanityAgainstCards.Entities
         {
             Player player = new Player(connectionId, name);
 
-            var hand = answerCards.Take(10).ToList();
-            player.PopulateHand(hand);
-
-            foreach (var card in hand)
-            {
-                answerCards.Remove(card);
-            }
-
             players.Add(connectionId, player);
 
             groupHub.PlayerJoined(name);
-        }
-
-        private IClient GetGroupHub()
-        {
-            return GlobalHost.ConnectionManager.GetHubContext<GameHub, IClient>().Clients.Group(roomCode);
         }
 
         public async Task Start()
@@ -68,12 +55,37 @@ namespace HumanityAgainstCards.Entities
             status = GameStatus.Running;
 
             PopulateCards();
+            PopulateHands();
 
             while (questionCards.Any())
             {
                 ShowNext();
 
+                ShowHands();
+
                 await Task.Delay(1000 * 10); // just leave at 10 seconds for now
+            }
+        }
+
+        private void PopulateHands()
+        {
+            foreach (var player in players)
+            {
+                var hand = answerCards.Take(10).ToList();
+                player.Value.PopulateHand(hand);
+
+                foreach (var card in hand)
+                {
+                    answerCards.Remove(card);
+                }
+            }
+        }
+
+        private void ShowHands()
+        {
+            foreach (var player in players)
+            {
+                player.Value.ShowHand();
             }
         }
 
@@ -84,6 +96,11 @@ namespace HumanityAgainstCards.Entities
             groupHub.NewQuestion(currentQuestion);
 
             questionCards.Remove(currentQuestion);
+        }
+
+        private IClient GetGroupHub()
+        {
+            return GlobalHost.ConnectionManager.GetHubContext<GameHub, IClient>().Clients.Group(roomCode);
         }
     }
 }

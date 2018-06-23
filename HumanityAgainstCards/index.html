@@ -11,19 +11,22 @@
 </head>
 <body>
     <h1>Room Code: <span id="room-code"></span></h1>
-    <div class="cover">
-        <div class="login">
-            <button id="create-game" type="button" class="btn btn-primary">Create Game</button>
-            <br />
-            <br />
-            <button id="join-game" type="button" class="btn btn-primary">Join Game</button>
+    <div class="left">
+        <button id="create-game" type="button" class="btn btn-primary">Create Game</button>
+        <br />
+        <br />
+        <button id="join-game" type="button" class="btn btn-primary">Join Game</button>
+        <br />
+        <br />
+        <button id="start" type="button" class="btn btn-primary">Start Game</button>
+
+        <div id="feed"></div>
+    </div>
+    <div class="right">
+        <h2>Hand</h2>
+        <div id="hand">
         </div>
     </div>
-    <br />
-    <br />
-    <button id="start" type="button" class="btn btn-primary">Start Game</button>
-
-    <div id="feed"></div>
 
     <!--Script references. -->
     <script src="scripts/jquery-3.3.1.min.js"></script>
