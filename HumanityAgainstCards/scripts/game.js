@@ -1,6 +1,7 @@
 ﻿$(function () {
     var gameHub = $.connection.gameHub;
     var room;
+    var currentQuestion;
 
     function log(message) {
         $("#feed").append("<p>" + message + "</p>");
@@ -19,6 +20,9 @@
 
     gameHub.client.newQuestion = function (question) {
         log("New Question: " + question.Value + " (" + question.BlankCount + " blanks)");
+
+        currentQuestion = question;
+        $("#question").text(question.Value.replace("_", "_______"));
     };
 
     gameHub.client.showHand = function (hand) {

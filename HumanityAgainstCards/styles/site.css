@@ -1,9 +1,38 @@
-﻿.left{
-    float:left;
-    width:80%;
-    min-height:500px;
+﻿body {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+}
+
+.left {
+    float: left;
+    width: 80%;
+    min-height: 500px;
+}
+
+.right {
+    float:right;
 }
 
 .hidden {
-    display:none;
+    display: none;
+}
+
+.card {
+    width: 250px;
+    height: 350px;
+    padding: 10px;
+    border-radius: 10px;
+    display: inline-block;
+    font-size: 22px;
+    font-weight:bold;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.5);
+    transition: 0.3s;
+}
+
+    .card:hover {
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.5);
+    }
+
+.card-question {
+    background-color: black;
+    color: white;
 }
