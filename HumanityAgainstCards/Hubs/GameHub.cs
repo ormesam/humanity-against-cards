@@ -26,5 +26,10 @@ namespace HumanityAgainstCards.Hubs
 
             Clients.Group(roomCode).RoomCodeChanged(roomCode);
         }
+
+        public void Start(string roomCode)
+        {
+            Controller.Instance.StartGame(roomCode);
+        }
     }
 }

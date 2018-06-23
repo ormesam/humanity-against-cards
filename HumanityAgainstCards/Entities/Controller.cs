@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HumanityAgainstCards.Entities
 {
@@ -64,6 +65,11 @@ namespace HumanityAgainstCards.Entities
             {
                 throw new Exception("Unable to find group...");
             }
+        }
+
+        public void StartGame(string roomCode)
+        {
+            Task.Run(() => Games[roomCode].Start());
         }
 
         #endregion

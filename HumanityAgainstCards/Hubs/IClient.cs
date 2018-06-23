@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.SignalR;
+﻿using HumanityAgainstCards.Entities;
+using Microsoft.AspNet.SignalR;
 
 namespace HumanityAgainstCards.Hubs
 {
@@ -6,5 +7,6 @@ namespace HumanityAgainstCards.Hubs
     {
         void PlayerJoined(string name);
         void RoomCodeChanged(string roomCode);
+        void NewQuestion(Card question);
     }
 }

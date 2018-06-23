@@ -3,6 +3,7 @@ using Microsoft.AspNet.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace HumanityAgainstCards.Entities
 {
@@ -13,6 +14,9 @@ namespace HumanityAgainstCards.Entities
         private IList<Card> questionCards;
         private IList<Card> answerCards;
         private IClient groupHub => GetGroupHub();
+        private GameStatus status;
+
+        private Card currentQuestion;
 
         public Game(string roomCode)
         {
@@ -21,8 +25,7 @@ namespace HumanityAgainstCards.Entities
             answerCards = new List<Card>();
 
             this.roomCode = roomCode;
-
-            PopulateCards();
+            status = GameStatus.Created;
         }
 
         private void PopulateCards()
@@ -53,6 +56,34 @@ namespace HumanityAgainstCards.Entities
         private IClient GetGroupHub()
         {
             return GlobalHost.ConnectionManager.GetHubContext<GameHub, IClient>().Clients.Group(roomCode);
+        }
+
+        public async Task Start()
+        {
+            if (status != GameStatus.Created)
+            {
+                return;
+            }
+
+            status = GameStatus.Running;
+
+            PopulateCards();
+
+            while (questionCards.Any())
+            {
+                ShowNext();
+
+                await Task.Delay(1000 * 10); // just leave at 10 seconds for now
+            }
+        }
+
+        private void ShowNext()
+        {
+            currentQuestion = questionCards.First();
+
+            groupHub.NewQuestion(currentQuestion);
+
+            questionCards.Remove(currentQuestion);
         }
     }
 }
