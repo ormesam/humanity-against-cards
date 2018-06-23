@@ -13,7 +13,7 @@ namespace HumanityAgainstCards.Entities
 
         public readonly string ConnectionId;
         public readonly string Name;
-        public int Points { get; private set; }
+        public int Points { get; set; }
         public IList<Card> Hand { get; private set; }
 
         public Player(string connectionId, string name)
@@ -39,7 +39,7 @@ namespace HumanityAgainstCards.Entities
             Hand.Remove(Hand.SingleOrDefault(row => row.Value == card));
         }
 
-        private IClient GetPlayerHub()
+        public IClient GetPlayerHub()
         {
             return GlobalHost.ConnectionManager.GetHubContext<GameHub, IClient>().Clients.Client(ConnectionId);
         }

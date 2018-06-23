@@ -19,7 +19,8 @@ namespace HumanityAgainstCards.Entities
         private GameStatus status;
 
         private Card currentQuestion;
-        private IDictionary<string, IList<string>> currentAnswers;
+        private IDictionary<string, string> currentAnswers;
+        private IDictionary<string, int> currentVotes;
 
         public Game(string roomCode)
         {
@@ -46,6 +47,7 @@ namespace HumanityAgainstCards.Entities
             players.Add(connectionId, player);
 
             groupHub.PlayerJoined(name);
+            player.GetPlayerHub().RoomCodeChanged(roomCode);
         }
 
         public async Task Start()
@@ -56,21 +58,28 @@ namespace HumanityAgainstCards.Entities
             }
 
             status = GameStatus.Running;
-            currentQuestion = null;
-            currentAnswers = new Dictionary<string, IList<string>>();
 
             PopulateCards();
 
             while (questionCards.Any())
             {
+                currentQuestion = null;
+                currentAnswers = new Dictionary<string, string>();
+                currentVotes = new Dictionary<string, int>();
+
                 PopulateHands();
                 ShowNext();
                 ShowHands();
 
                 // give users time to pick cards, show timer maybe?
-                await Task.Delay(1000 * 10); // just leave at 10 seconds for now
+                await Task.Delay(1000 * 30); // just leave at 10 seconds for now
 
                 ShowSelectedCards();
+
+                // give users time to select the winning card
+                await Task.Delay(1000 * 30); // just leave at 10 seconds for now
+
+                CalculateAndShowWinningCards();
 
                 await Task.Delay(1000 * 10); // just leave at 10 seconds for now
             }
@@ -119,11 +128,48 @@ namespace HumanityAgainstCards.Entities
         {
             if (!currentAnswers.ContainsKey(connectionId))
             {
-                currentAnswers.Add(connectionId, new List<string>());
+                currentAnswers.Add(connectionId, card);
+            }
+            else
+            {
+                currentAnswers[connectionId] += " | " + card;
             }
 
-            currentAnswers[connectionId].Add(card);
             players[connectionId].RemoveCardFromHand(card);
+        }
+
+        public void SubmitVote(string card)
+        {
+            if (!currentVotes.ContainsKey(card))
+            {
+                currentVotes.Add(card, 0);
+            }
+
+            currentVotes[card]++;
+        }
+
+        private void CalculateAndShowWinningCards()
+        {
+            if (!currentVotes.Any())
+            {
+                // no votes cast, skip
+                return;
+            }
+
+            // will need to account for multiple cards with the same votes at somepoint
+            var winningCard = currentVotes
+                .OrderByDescending(row => row.Value)
+                .FirstOrDefault();
+
+            string playerConnection = currentAnswers
+                .Where(row => row.Value == winningCard.Key)
+                .Select(row => row.Key)
+                .SingleOrDefault();
+
+            Player winner = players[playerConnection];
+            winner.Points++;
+
+            groupHub.ShowWinningCard(winner.Name, winningCard.Key, winningCard.Value);
         }
 
         private IClient GetGroupHub()

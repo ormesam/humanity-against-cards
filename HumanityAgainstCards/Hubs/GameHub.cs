@@ -23,8 +23,6 @@ namespace HumanityAgainstCards.Hubs
             await Groups.Add(Context.ConnectionId, roomCode);
 
             await JoinGame(roomCode, hostName);
-
-            Clients.Group(roomCode).RoomCodeChanged(roomCode);
         }
 
         public void Start(string roomCode)
@@ -35,6 +33,11 @@ namespace HumanityAgainstCards.Hubs
         public void SubmitCard(string roomCode, string card)
         {
             Controller.Instance.SubmitCard(roomCode, Context.ConnectionId, card);
+        }
+
+        public void SubmitVote(string roomCode, string card)
+        {
+            Controller.Instance.SubmitVote(roomCode, card);
         }
     }
 }

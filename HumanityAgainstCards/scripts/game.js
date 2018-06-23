@@ -38,8 +38,13 @@
         for (var i = 0; i < cards.length; i++) {
             var card = $("<p>");
             card.text(cards[i]);
+            card.addClass("vote-card");
             $("#answers").append(card);
         }
+    };
+
+    gameHub.client.showWinningCard = function (player, card, votes) {
+        log(player + " won! Card: " + card + " (Votes: " + votes + ")");
     };
 
     $.connection.hub.start().done(function () {
@@ -73,6 +78,12 @@
         $(document).on("click", ".hand-card", function () {
             gameHub.server.submitCard(room, $(this).text());
             console.log("Submitted card: " + $(this).text());
+            $(this).addClass("hidden");
+        })
+
+        $(document).on("click", ".vote-card", function () {
+            gameHub.server.submitVote(room, $(this).text());
+            console.log("Voted for: " + $(this).text());
             $(this).addClass("hidden");
         })
     })

@@ -77,6 +77,11 @@ namespace HumanityAgainstCards.Entities
             Games[roomCode].SubmitCard(connectionId, card);
         }
 
+        public void SubmitVote(string roomCode, string card)
+        {
+            Games[roomCode].SubmitVote(card);
+        }
+
         #endregion
     }
 }
