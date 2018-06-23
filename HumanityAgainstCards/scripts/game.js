@@ -27,7 +27,18 @@
         for (var i = 0; i < hand.length; i++) {
             var card = $("<p>");
             card.text(hand[i].Value);
+            card.addClass("hand-card");
             $("#hand").append(card);
+        }
+    };
+
+    gameHub.client.showSelectedCards = function (cards) {
+        $("#answers").html("");
+
+        for (var i = 0; i < cards.length; i++) {
+            var card = $("<p>");
+            card.text(cards[i]);
+            $("#answers").append(card);
         }
     };
 
@@ -58,5 +69,11 @@
         $("#start").click(function () {
             gameHub.server.start(room);
         });
+
+        $(document).on("click", ".hand-card", function () {
+            gameHub.server.submitCard(room, $(this).text());
+            console.log("Submitted card: " + $(this).text());
+            $(this).addClass("hidden");
+        })
     })
 });

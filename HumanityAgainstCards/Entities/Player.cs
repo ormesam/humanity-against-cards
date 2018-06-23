@@ -34,6 +34,11 @@ namespace HumanityAgainstCards.Entities
             hub.ShowHand(Hand);
         }
 
+        public void RemoveCardFromHand(string card)
+        {
+            Hand.Remove(Hand.SingleOrDefault(row => row.Value == card));
+        }
+
         private IClient GetPlayerHub()
         {
             return GlobalHost.ConnectionManager.GetHubContext<GameHub, IClient>().Clients.Client(ConnectionId);

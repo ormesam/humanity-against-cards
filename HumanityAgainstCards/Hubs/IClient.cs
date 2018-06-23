@@ -10,5 +10,6 @@ namespace HumanityAgainstCards.Hubs
         void RoomCodeChanged(string roomCode);
         void NewQuestion(Card question);
         void ShowHand(IList<Card> hand);
+        void ShowSelectedCards(IList<string> answers);
     }
 }

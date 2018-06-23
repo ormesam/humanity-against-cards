@@ -31,5 +31,10 @@ namespace HumanityAgainstCards.Hubs
         {
             Controller.Instance.StartGame(roomCode);
         }
+
+        public void SubmitCard(string roomCode, string card)
+        {
+            Controller.Instance.SubmitCard(roomCode, Context.ConnectionId, card);
+        }
     }
 }
