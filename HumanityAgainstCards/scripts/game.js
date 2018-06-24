@@ -35,13 +35,7 @@
         answersSelected = 0;
         hasVoted = false;
 
-        var expandedQuestion = question.Value;
-
-        for (var i = 0; i < question.BlankCount; i++) {
-            expandedQuestion = expandedQuestion.replace("_", "_______")
-        }
-
-        $("#question").text(expandedQuestion);
+        $("#question").text(question.Value);
     };
 
     gameHub.client.showHand = function (hand) {
