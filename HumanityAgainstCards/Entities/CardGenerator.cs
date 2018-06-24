@@ -1336,17 +1336,17 @@ Lightsaber Dildos";
 
         #endregion
 
-        public IList<Card> GenerateQuestions()
+        public IList<QuestionCard> GenerateQuestions()
         {
-            return ParseCardDump(questionTxtDump).ToList();
+            return ParseQuestions(questionTxtDump).ToList();
         }
 
         public IList<Card> GenerateAnswers()
         {
-            return ParseCardDump(answersTxtDump).ToList();
+            return ParseAnswers(answersTxtDump).ToList();
         }
 
-        private IEnumerable<Card> ParseCardDump(string txtDump)
+        private IEnumerable<Card> ParseAnswers(string txtDump)
         {
             string[] cardStrings = txtDump.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -1363,7 +1363,33 @@ Lightsaber Dildos";
 
                 yield return new Card
                 {
+                    Id = Guid.NewGuid(),
                     Value = card,
+                };
+            }
+        }
+
+        private IEnumerable<QuestionCard> ParseQuestions(string txtDump)
+        {
+            string[] cardStrings = txtDump.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+            cardStrings.Shuffle();
+
+            foreach (var card in cardStrings)
+            {
+                int blankCount = card.Count(c => c == '_');
+
+                if (blankCount == 0)
+                {
+                    blankCount = 1;
+                }
+
+                string value = card.Replace("_", "_________");
+
+                yield return new QuestionCard
+                {
+                    Id = Guid.NewGuid(),
+                    Value = value,
                     BlankCount = blankCount,
                 };
             }

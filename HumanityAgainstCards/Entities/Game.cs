@@ -13,19 +13,19 @@ namespace HumanityAgainstCards.Entities
 
         private string roomCode;
         private IDictionary<string, Player> players;
-        private IList<Card> questionCards;
+        private IList<QuestionCard> questionCards;
         private IList<Card> answerCards;
         private IClient groupHub => GetGroupHub();
         private GameStatus status;
 
-        private Card currentQuestion;
+        private QuestionCard currentQuestion;
         private IDictionary<string, string> currentAnswers;
         private IDictionary<string, int> currentVotes;
 
         public Game(string roomCode)
         {
             players = new Dictionary<string, Player>();
-            questionCards = new List<Card>();
+            questionCards = new List<QuestionCard>();
             answerCards = new List<Card>();
 
             this.roomCode = roomCode;
@@ -72,12 +72,12 @@ namespace HumanityAgainstCards.Entities
                 ShowHands();
 
                 // give users time to pick cards, show timer maybe?
-                await Task.Delay(1000 * 30); // just leave at 10 seconds for now
+                await Task.Delay(1000 * 20); // just leave at 20 seconds for now
 
                 ShowSelectedCards();
 
                 // give users time to select the winning card
-                await Task.Delay(1000 * 30); // just leave at 10 seconds for now
+                await Task.Delay(1000 * 20); // just leave at 20 seconds for now
 
                 CalculateAndShowWinningCards();
 

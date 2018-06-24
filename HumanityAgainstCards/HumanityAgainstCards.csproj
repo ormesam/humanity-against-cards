@@ -107,6 +107,7 @@
     <Compile Include="Entities\Game.cs" />
     <Compile Include="Entities\GameStatus.cs" />
     <Compile Include="Entities\Player.cs" />
+    <Compile Include="Entities\QuestionCard.cs" />
     <Compile Include="Hubs\GameHub.cs" />
     <Compile Include="Hubs\IClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
