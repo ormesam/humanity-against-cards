@@ -15,11 +15,11 @@ namespace HumanityAgainstCards.Entities
         private IDictionary<string, Player> players;
         private IList<QuestionCard> allQuestionCards;
         private IList<AnswerCard> allAnswerCards;
-        private IClient groupHub => GetGroupHub();
         private GameStatus status;
 
         private QuestionCard currentQuestion;
         private IList<VotingCard> votes;
+        private IClient groupHub => GetGroupHub();
 
         public Game(string roomCode)
         {
@@ -46,6 +46,9 @@ namespace HumanityAgainstCards.Entities
             players.Add(connectionId, player);
 
             groupHub.PlayerJoined(name);
+
+            UpdatePlayerLeaderboard();
+
             player.GetPlayerHub().RoomCodeChanged(roomCode);
         }
 
@@ -81,6 +84,8 @@ namespace HumanityAgainstCards.Entities
 
                 await Task.Delay(1000 * 10); // just leave at 10 seconds for now
             }
+
+            status = GameStatus.Stopped;
         }
 
         private void PopulateHands()
@@ -161,7 +166,7 @@ namespace HumanityAgainstCards.Entities
 
         private void CalculateAndShowWinningCards()
         {
-            if (!votes.Any())
+            if (votes.All(v => v.Votes == 0))
             {
                 // no votes cast, skip
                 return;
@@ -176,6 +181,17 @@ namespace HumanityAgainstCards.Entities
             winner.Points++;
 
             groupHub.ShowWinningCard(winner.Name, winningCard.Value, winningCard.Votes);
+
+            UpdatePlayerLeaderboard();
+        }
+
+        private void UpdatePlayerLeaderboard()
+        {
+            IList<Player> leaderboard = players.Values
+                .OrderByDescending(row => row.Points)
+                .ToList();
+
+            groupHub.UpdateLeaderboard(leaderboard);
         }
 
         private IClient GetGroupHub()

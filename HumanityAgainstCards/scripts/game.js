@@ -81,6 +81,23 @@
         console.log(player + " won! Card: " + card + " (Votes: " + votes + ")");
     };
 
+    gameHub.client.updateLeaderboard = function (players) {
+        $("#leaderboard").html("");
+
+        for (var i = 0; i < players.length; i++) {
+            var row = $("<tr>");
+            var name = $("<td>");
+            var points = $("<td>");
+
+            name.text(players[i].Name);
+            points.text(players[i].Points);
+
+            row.append(name);
+            row.append(points);
+            $("#leaderboard").append(row);
+        }
+    };
+
     $.connection.hub.start().done(function () {
         console.log("Connection succeeded...");
 

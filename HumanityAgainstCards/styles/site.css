@@ -42,7 +42,7 @@
 }
 
     .card-hand.selected {
-        background-color:lightgray;
+        background-color: lightgray;
     }
 
 .card-vote {
@@ -50,7 +50,7 @@
 }
 
     .card-vote.selected {
-        background-color:lightgray;
+        background-color: lightgray;
     }
 
 .cover {
