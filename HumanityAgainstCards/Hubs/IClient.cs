@@ -13,5 +13,6 @@ namespace HumanityAgainstCards.Hubs
         void ShowVotingCards(IList<VotingCard> votingCards);
         void ShowWinningCard(string name, string card, int voteCount);
         void UpdateLeaderboard(IList<Player> leaderboard);
+        void StartTimer(int seconds);
     }
 }

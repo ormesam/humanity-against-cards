@@ -72,20 +72,25 @@ namespace HumanityAgainstCards.Entities
                 ShowNext();
                 ShowHands();
 
-                // give users time to pick cards, show timer maybe?
-                await Task.Delay(1000 * 20); // just leave at 20 seconds for now
+                await StartTimer(20);
 
                 ShowSelectedCards();
 
-                // give users time to select the winning card
-                await Task.Delay(1000 * 20); // just leave at 20 seconds for now
+                await StartTimer(20);
 
                 CalculateAndShowWinningCards();
 
-                await Task.Delay(1000 * 10); // just leave at 10 seconds for now
+                await StartTimer(10);
             }
 
             status = GameStatus.Stopped;
+        }
+
+        private async Task StartTimer(int seconds)
+        {
+            groupHub.StartTimer(seconds);
+
+            await Task.Delay(1000 * seconds);
         }
 
         private void PopulateHands()
