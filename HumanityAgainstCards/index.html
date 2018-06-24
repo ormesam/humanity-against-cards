@@ -11,18 +11,16 @@
 </head>
 <body>
     <div class="card card-question">
-        <p id="question">This is a test question with one _ blank space.</p>
+        <p id="question"><span id="start">Click here to start the game...</span></p>
     </div>
     <h1 class="right">Room Code: <span id="room-code"></span></h1>
     <div class="left">
-        <button id="start" type="button">Start Game</button>
-
-        <div id="feed"></div>
-    </div>
-    <div>
         <h2>Hand</h2>
         <div id="hand">
         </div>
+        <div id="feed"></div>
+    </div>
+    <div>
         <h2>Answers to current question</h2>
         <div id="answers">
         </div>
@@ -31,9 +29,7 @@
     <div class="cover">
         <div class="login">
             <button id="create-game" type="button" class="btn btn-create">Create Game</button>
-            <br />
-            <span>OR</span>
-            <br />
+            <p class="text-centre">OR</p>
             <button id="join-game" type="button" class="btn btn-join">Join Game</button>
         </div>
     </div>

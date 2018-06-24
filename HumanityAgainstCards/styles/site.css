@@ -1,5 +1,6 @@
 ﻿body {
     font-family: 'Helvetica', 'Arial', sans-serif;
+    background-color: #E9EBEE;
 }
 
 .left {
@@ -9,11 +10,7 @@
 }
 
 .right {
-    float:right;
-}
-
-.hidden {
-    display: none;
+    float: right;
 }
 
 .card {
@@ -22,10 +19,13 @@
     padding: 10px;
     border-radius: 10px;
     display: inline-block;
+    vertical-align: top;
     font-size: 22px;
-    font-weight:bold;
+    font-weight: bold;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.5);
     transition: 0.3s;
+    margin: 5px;
+    background-color: white;
 }
 
     .card:hover {
@@ -37,13 +37,17 @@
     color: white;
 }
 
+.card-hand {
+    cursor:pointer;
+}
+
 .cover {
-    width:100%;
-    height:100%;
-    background-color:white;
-    position:absolute;
-    top:0;
-    left:0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .login {
@@ -52,7 +56,7 @@
     max-width: 500px;
     margin-left: auto;
     margin-right: auto;
-    margin-top:20vh;
+    margin-top: 20vh;
 }
 
 .btn {
@@ -61,14 +65,14 @@
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    border-radius:5px;
-    width:100%;
-    cursor:pointer;
+    border-radius: 5px;
+    width: 100%;
+    cursor: pointer;
 }
 
-.btn:focus, .btn:active:focus, .btn.active:focus {
-    outline: 0 none;
-}
+    .btn:focus, .btn:active:focus, .btn.active:focus {
+        outline: 0 none;
+    }
 
 .btn-create {
     background: #0099cc;
@@ -83,3 +87,15 @@
         background: #007299;
         box-shadow: none;
     }
+
+.text-centre {
+    text-align: center;
+}
+
+#start {
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
+}
