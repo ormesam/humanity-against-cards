@@ -3,11 +3,7 @@
     var roomCode;
     var currentQuestion;
     var answersSelected;
-
-    function log(message) {
-        $("#feed").append("<p>" + message + "</p>");
-        console.log(message);
-    }
+    var hasVoted;
 
     function createCard(text) {
         var card = $("<div>");
@@ -22,11 +18,11 @@
     }
 
     gameHub.client.playerJoined = function (name) {
-        log("Player joined: " + name);
+        console.log("Player joined: " + name);
     };
 
     gameHub.client.roomCodeChanged = function (code) {
-        log("Room code changed: " + code);
+        console.log("Room code: " + code);
         $("#room-code").text(code);
         roomCode = code;
     };
@@ -37,6 +33,7 @@
 
         currentQuestion = question;
         answersSelected = 0;
+        hasVoted = false;
 
         var expandedQuestion = question.Value;
 
@@ -71,7 +68,7 @@
     };
 
     gameHub.client.showWinningCard = function (player, card, votes) {
-        log(player + " won! Card: " + card + " (Votes: " + votes + ")");
+        console.log(player + " won! Card: " + card + " (Votes: " + votes + ")");
     };
 
     $.connection.hub.start().done(function () {
@@ -123,9 +120,15 @@
         })
 
         $(document).on("click", ".card-vote", function () {
+            if (hasVoted) {
+                return;
+            }
+
+            hasVoted = true;
+
             gameHub.server.submitVote(roomCode, $(this).text());
             console.log("Voted for: " + $(this).text());
-            $(this).addClass("hidden");
+            $(this).addClass("selected");
         })
     })
 });

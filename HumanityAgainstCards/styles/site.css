@@ -49,6 +49,10 @@
     cursor: pointer;
 }
 
+    .card-vote.selected {
+        background-color:lightgray;
+    }
+
 .cover {
     width: 100%;
     height: 100%;
