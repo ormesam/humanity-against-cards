@@ -5,10 +5,11 @@
     var answersSelected;
     var hasVoted;
 
-    function createCard(text) {
+    function createCard(id, text) {
         var card = $("<div>");
         var cardText = $("<p>");
 
+        card.attr("data-id", id);
         card.addClass("card");
         cardText.text(text);
 
@@ -43,7 +44,7 @@
         $("#hand-section").removeClass("hidden");
 
         for (var i = 0; i < hand.length; i++) {
-            var card = createCard(hand[i].Value);
+            var card = createCard(hand[i].Id, hand[i].Value);
             card.addClass("card-hand");
             $("#hand").append(card);
         }
@@ -55,7 +56,7 @@
         $("#voting-section").removeClass("hidden");
 
         for (var i = 0; i < cards.length; i++) {
-            var card = createCard(cards[i]);
+            var card = createCard("", cards[i]);
             card.addClass("card-vote");
             $("#answers").append(card);
         }
