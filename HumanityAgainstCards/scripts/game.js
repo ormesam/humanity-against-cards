@@ -18,6 +18,21 @@
         return card;
     }
 
+    function createVotingCard(id, textValues) {
+        var card = $("<div>");
+        card.attr("data-id", id);
+        card.addClass("card");
+
+        for (var i = 0; i < textValues.length; i++) {
+            var text = textValues[i];
+            var cardText = $("<p>");
+            cardText.text(text);
+            card.append(cardText);
+        }
+
+        return card;
+    }
+
     gameHub.client.playerJoined = function (name) {
         console.log("Player joined: " + name);
     };
@@ -50,13 +65,13 @@
         }
     };
 
-    gameHub.client.showSelectedCards = function (cards) {
+    gameHub.client.showVotingCards = function (cards) {
         $("#answers").html("");
         $("#hand-section").addClass("hidden");
         $("#voting-section").removeClass("hidden");
 
         for (var i = 0; i < cards.length; i++) {
-            var card = createCard("", cards[i]);
+            var card = createVotingCard(cards[i].Id, cards[i].Values);
             card.addClass("card-vote");
             $("#answers").append(card);
         }
@@ -105,13 +120,13 @@
 
             answersSelected++;
 
-            var cardText = $(this).children("p").first().text();
+            var cardId = $(this).attr("data-id");
 
-            gameHub.server.submitCard(roomCode, cardText);
+            gameHub.server.submitCard(roomCode, cardId);
 
             $(this).addClass("selected");
 
-            console.log("Submitted card: " + cardText);
+            console.log("Submitted card " + cardId);
         })
 
         $(document).on("click", ".card-vote", function () {
@@ -121,9 +136,13 @@
 
             hasVoted = true;
 
-            gameHub.server.submitVote(roomCode, $(this).text());
-            console.log("Voted for: " + $(this).text());
+            var cardId = $(this).attr("data-id");
+
+            gameHub.server.submitVote(roomCode, cardId);
+
             $(this).addClass("selected");
+
+            console.log("Voted for: " + $(this).text());
         })
     })
 });

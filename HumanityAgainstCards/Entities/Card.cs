@@ -2,9 +2,9 @@
 
 namespace HumanityAgainstCards.Entities
 {
-    public class Card
+    public abstract class Card
     {
         public Guid Id { get; set; }
-        public string Value { get; set; }
+        public virtual string Value { get; set; }
     }
 }

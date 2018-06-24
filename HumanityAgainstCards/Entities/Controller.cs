@@ -72,14 +72,14 @@ namespace HumanityAgainstCards.Entities
             Task.Run(() => Games[roomCode].Start());
         }
 
-        public void SubmitCard(string roomCode, string connectionId, string card)
+        public void SubmitCard(string roomCode, string connectionId, Guid card)
         {
             Games[roomCode].SubmitCard(connectionId, card);
         }
 
-        public void SubmitVote(string roomCode, string card)
+        public void SubmitVote(string roomCode, Guid cardId)
         {
-            Games[roomCode].SubmitVote(card);
+            Games[roomCode].SubmitVote(cardId);
         }
 
         #endregion

@@ -13,20 +13,19 @@ namespace HumanityAgainstCards.Entities
 
         private string roomCode;
         private IDictionary<string, Player> players;
-        private IList<QuestionCard> questionCards;
-        private IList<Card> answerCards;
+        private IList<QuestionCard> allQuestionCards;
+        private IList<AnswerCard> allAnswerCards;
         private IClient groupHub => GetGroupHub();
         private GameStatus status;
 
         private QuestionCard currentQuestion;
-        private IDictionary<string, string> currentAnswers;
-        private IDictionary<string, int> currentVotes;
+        private IList<VotingCard> votes;
 
         public Game(string roomCode)
         {
             players = new Dictionary<string, Player>();
-            questionCards = new List<QuestionCard>();
-            answerCards = new List<Card>();
+            allQuestionCards = new List<QuestionCard>();
+            allAnswerCards = new List<AnswerCard>();
 
             this.roomCode = roomCode;
             status = GameStatus.Created;
@@ -36,8 +35,8 @@ namespace HumanityAgainstCards.Entities
         {
             CardGenerator generator = new CardGenerator();
 
-            questionCards = generator.GenerateQuestions();
-            answerCards = generator.GenerateAnswers();
+            allQuestionCards = generator.GenerateQuestions();
+            allAnswerCards = generator.GenerateAnswers();
         }
 
         public void AddPlayer(string connectionId, string name)
@@ -61,11 +60,10 @@ namespace HumanityAgainstCards.Entities
 
             PopulateCards();
 
-            while (questionCards.Any())
+            while (allQuestionCards.Any())
             {
                 currentQuestion = null;
-                currentAnswers = new Dictionary<string, string>();
-                currentVotes = new Dictionary<string, int>();
+                votes = new List<VotingCard>();
 
                 PopulateHands();
                 ShowNext();
@@ -89,11 +87,14 @@ namespace HumanityAgainstCards.Entities
         {
             foreach (var player in players)
             {
-                while (player.Value.Hand.Count < numberOfCardsInHand && answerCards.Any())
+                while (player.Value.Hand.Count < numberOfCardsInHand && allAnswerCards.Any())
                 {
-                    var card = answerCards.FirstOrDefault();
+                    var card = allAnswerCards
+                        .Where(row => row.IsAvailable)
+                        .FirstOrDefault();
+
                     player.Value.AddToHand(card);
-                    answerCards.Remove(card);
+                    card.PlayerId = player.Key;
                 }
             }
         }
@@ -108,68 +109,73 @@ namespace HumanityAgainstCards.Entities
 
         private void ShowNext()
         {
-            currentQuestion = questionCards.First();
+            currentQuestion = allQuestionCards.First();
 
             groupHub.NewQuestion(currentQuestion);
 
-            questionCards.Remove(currentQuestion);
+            allQuestionCards.Remove(currentQuestion);
         }
 
         private void ShowSelectedCards()
         {
-            IList<string> flatAnswers = currentAnswers.Values
-                .Select(row => string.Join(" | ", row))
-                .ToList();
-
-            groupHub.ShowSelectedCards(flatAnswers);
+            groupHub.ShowVotingCards(votes);
         }
 
-        public void SubmitCard(string connectionId, string card)
+        public void SubmitCard(string connectionId, Guid cardId)
         {
-            if (!currentAnswers.ContainsKey(connectionId))
+            // as some questions can have multiple answers we need to handle users submitting multiple cards
+            VotingCard votingCard = votes
+                .Where(row => row.PlayerId == connectionId)
+                .SingleOrDefault();
+
+            if (votingCard == null)
             {
-                currentAnswers.Add(connectionId, card);
+                votingCard = new VotingCard
+                {
+                    Id = Guid.NewGuid(),
+                    PlayerId = connectionId,
+                    Values = new List<string>(),
+                    Votes = 0,
+                };
+
+                votes.Add(votingCard);
             }
-            else
-            {
-                currentAnswers[connectionId] += " | " + card;
-            }
+
+            var card = allAnswerCards
+                .Where(row => row.Id == cardId)
+                .SingleOrDefault();
+
+            votingCard.Values.Add(card.Value);
 
             players[connectionId].RemoveCardFromHand(card);
         }
 
-        public void SubmitVote(string card)
+        public void SubmitVote(Guid cardId)
         {
-            if (!currentVotes.ContainsKey(card))
-            {
-                currentVotes.Add(card, 0);
-            }
+            VotingCard card = votes
+                .Where(row => row.Id == cardId)
+                .SingleOrDefault();
 
-            currentVotes[card]++;
+            card.Votes++;
         }
 
         private void CalculateAndShowWinningCards()
         {
-            if (!currentVotes.Any())
+            if (!votes.Any())
             {
                 // no votes cast, skip
                 return;
             }
 
             // will need to account for multiple cards with the same votes at somepoint
-            var winningCard = currentVotes
-                .OrderByDescending(row => row.Value)
+            var winningCard = votes
+                .OrderByDescending(row => row.Votes)
                 .FirstOrDefault();
 
-            string playerConnection = currentAnswers
-                .Where(row => row.Value == winningCard.Key)
-                .Select(row => row.Key)
-                .SingleOrDefault();
-
-            Player winner = players[playerConnection];
+            Player winner = players[winningCard.PlayerId];
             winner.Points++;
 
-            groupHub.ShowWinningCard(winner.Name, winningCard.Key, winningCard.Value);
+            groupHub.ShowWinningCard(winner.Name, winningCard.Value, winningCard.Votes);
         }
 
         private IClient GetGroupHub()

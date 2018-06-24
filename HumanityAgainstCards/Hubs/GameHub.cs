@@ -1,5 +1,6 @@
 ﻿using HumanityAgainstCards.Entities;
 using Microsoft.AspNet.SignalR;
+using System;
 using System.Threading.Tasks;
 
 namespace HumanityAgainstCards.Hubs
@@ -30,14 +31,14 @@ namespace HumanityAgainstCards.Hubs
             Controller.Instance.StartGame(roomCode);
         }
 
-        public void SubmitCard(string roomCode, string card)
+        public void SubmitCard(string roomCode, Guid cardId)
         {
-            Controller.Instance.SubmitCard(roomCode, Context.ConnectionId, card);
+            Controller.Instance.SubmitCard(roomCode, Context.ConnectionId, cardId);
         }
 
-        public void SubmitVote(string roomCode, string card)
+        public void SubmitVote(string roomCode, Guid cardId)
         {
-            Controller.Instance.SubmitVote(roomCode, card);
+            Controller.Instance.SubmitVote(roomCode, cardId);
         }
     }
 }

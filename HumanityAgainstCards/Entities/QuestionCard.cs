@@ -5,7 +5,7 @@ using System.Web;
 
 namespace HumanityAgainstCards.Entities
 {
-    public class QuestionCard : Card
+    public class QuestionCard : AnswerCard
     {
         public int BlankCount { get; set; }
     }

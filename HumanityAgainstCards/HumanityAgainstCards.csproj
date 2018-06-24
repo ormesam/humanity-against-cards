@@ -100,6 +100,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\AnswerCard.cs" />
     <Compile Include="Entities\Card.cs" />
     <Compile Include="Entities\CardGenerator.cs" />
     <Compile Include="Entities\Controller.cs" />
@@ -108,6 +109,7 @@
     <Compile Include="Entities\GameStatus.cs" />
     <Compile Include="Entities\Player.cs" />
     <Compile Include="Entities\QuestionCard.cs" />
+    <Compile Include="Entities\VotingCard.cs" />
     <Compile Include="Hubs\GameHub.cs" />
     <Compile Include="Hubs\IClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

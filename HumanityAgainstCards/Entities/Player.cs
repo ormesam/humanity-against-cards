@@ -14,18 +14,20 @@ namespace HumanityAgainstCards.Entities
         public readonly string ConnectionId;
         public readonly string Name;
         public int Points { get; set; }
-        public IList<Card> Hand { get; private set; }
+        public IList<AnswerCard> Hand { get; private set; }
 
         public Player(string connectionId, string name)
         {
             ConnectionId = connectionId;
             Name = name;
-            Hand = new List<Card>();
+            Hand = new List<AnswerCard>();
             Points = 0;
         }
 
-        public void AddToHand(Card card)
+        public void AddToHand(AnswerCard card)
         {
+            card.PlayerId = ConnectionId;
+
             Hand.Add(card);
         }
 
@@ -34,9 +36,9 @@ namespace HumanityAgainstCards.Entities
             hub.ShowHand(Hand);
         }
 
-        public void RemoveCardFromHand(string card)
+        public void RemoveCardFromHand(AnswerCard card)
         {
-            Hand.Remove(Hand.SingleOrDefault(row => row.Value == card));
+            Hand.Remove(card);
         }
 
         public IClient GetPlayerHub()

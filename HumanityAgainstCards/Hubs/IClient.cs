@@ -8,9 +8,9 @@ namespace HumanityAgainstCards.Hubs
     {
         void PlayerJoined(string name);
         void RoomCodeChanged(string roomCode);
-        void NewQuestion(Card question);
-        void ShowHand(IList<Card> hand);
-        void ShowSelectedCards(IList<string> answers);
+        void NewQuestion(AnswerCard question);
+        void ShowHand(IList<AnswerCard> hand);
+        void ShowVotingCards(IList<VotingCard> votingCards);
         void ShowWinningCard(string name, string card, int voteCount);
     }
 }

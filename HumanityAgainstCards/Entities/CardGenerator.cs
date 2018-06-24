@@ -1341,12 +1341,12 @@ Lightsaber Dildos";
             return ParseQuestions(questionTxtDump).ToList();
         }
 
-        public IList<Card> GenerateAnswers()
+        public IList<AnswerCard> GenerateAnswers()
         {
             return ParseAnswers(answersTxtDump).ToList();
         }
 
-        private IEnumerable<Card> ParseAnswers(string txtDump)
+        private IEnumerable<AnswerCard> ParseAnswers(string txtDump)
         {
             string[] cardStrings = txtDump.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -1361,7 +1361,7 @@ Lightsaber Dildos";
                     blankCount = 1;
                 }
 
-                yield return new Card
+                yield return new AnswerCard
                 {
                     Id = Guid.NewGuid(),
                     Value = card,
