@@ -38,7 +38,15 @@
 }
 
 .card-hand {
-    cursor:pointer;
+    cursor: pointer;
+}
+
+    .card-hand.selected {
+        background-color:lightgray;
+    }
+
+.card-vote {
+    cursor: pointer;
 }
 
 .cover {

@@ -2,6 +2,7 @@
     var gameHub = $.connection.gameHub;
     var roomCode;
     var currentQuestion;
+    var answersSelected;
 
     function log(message) {
         $("#feed").append("<p>" + message + "</p>");
@@ -35,6 +36,7 @@
         console.log("New Question: " + question.Value + " (" + question.BlankCount + " blanks)");
 
         currentQuestion = question;
+        answersSelected = 0;
 
         var expandedQuestion = question.Value;
 
@@ -105,9 +107,17 @@
         });
 
         $(document).on("click", ".card-hand", function () {
+            if (answersSelected === currentQuestion.BlankCount) {
+                return;
+            }
+
+            answersSelected++;
+
             var cardText = $(this).children("p").first().text();
+
             gameHub.server.submitCard(roomCode, cardText);
-            $(this).addClass("hidden");
+
+            $(this).addClass("selected");
 
             console.log("Submitted card: " + cardText);
         })

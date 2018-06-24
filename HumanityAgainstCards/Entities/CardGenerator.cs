@@ -1354,10 +1354,17 @@ Lightsaber Dildos";
 
             foreach (var card in cardStrings)
             {
+                int blankCount = card.Count(c => c == '_');
+
+                if (blankCount == 0)
+                {
+                    blankCount = 1;
+                }
+
                 yield return new Card
                 {
                     Value = card,
-                    BlankCount = card.Count(c => c == '_'),
+                    BlankCount = blankCount,
                 };
             }
         }
