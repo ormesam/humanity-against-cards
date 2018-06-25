@@ -3,7 +3,7 @@
     var roomCode;
     var currentQuestion;
     var answersSelected;
-    var hasVoted;
+    var canVote;
 
     function createCard(id, text) {
         var card = $("<div>");
@@ -49,7 +49,7 @@
 
         currentQuestion = question;
         answersSelected = 0;
-        hasVoted = false;
+        canVote = true;
 
         $("#question").text(question.Value);
     };
@@ -78,6 +78,8 @@
     };
 
     gameHub.client.showWinningCard = function (player, card, votes) {
+        canVote = false;
+
         console.log(player + " won! Card: " + card + " (Votes: " + votes + ")");
     };
 
@@ -151,11 +153,11 @@
         })
 
         $(document).on("click", ".card-vote", function () {
-            if (hasVoted) {
+            if (!canVote) {
                 return;
             }
 
-            hasVoted = true;
+            canVote = false;
 
             var cardId = $(this).attr("data-id");
 
