@@ -78,6 +78,11 @@ namespace HumanityAgainstCards.Entities
                 .Select(row => row.Value)
                 .SingleOrDefault();
 
+            if (game == null)
+            {
+                return;
+            }
+
             game.RemovePlayer(connectionId);
 
             if (game.Status == GameStatus.Stopped)
