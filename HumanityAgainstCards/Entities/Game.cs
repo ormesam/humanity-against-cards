@@ -19,6 +19,12 @@ namespace HumanityAgainstCards.Entities
 
         private QuestionCard currentQuestion;
         private IList<VotingCard> votes;
+        private bool skipTimer;
+        private int maxSubmitCount;
+        private int currentSubmitCount;
+        private int maxVoteCount;
+        private int currentVoteCount;
+
         private IClient groupHub => GetGroupHub();
 
         public Game(string roomCode)
@@ -66,17 +72,23 @@ namespace HumanityAgainstCards.Entities
             while (allQuestionCards.Any())
             {
                 currentQuestion = null;
+                maxSubmitCount = 0;
+                maxVoteCount = players.Count;
+
+                currentSubmitCount = 0;
+                currentVoteCount = 0;
+
                 votes = new List<VotingCard>();
 
                 PopulateHands();
                 ShowNext();
                 ShowHands();
 
-                await StartTimer(20);
+                await StartTimer(60);
 
                 ShowSelectedCards();
 
-                await StartTimer(20);
+                await StartTimer(60);
 
                 CalculateAndShowWinningCards();
 
@@ -88,9 +100,20 @@ namespace HumanityAgainstCards.Entities
 
         private async Task StartTimer(int seconds)
         {
-            groupHub.StartTimer(seconds);
+            skipTimer = false;
 
-            await Task.Delay(1000 * seconds);
+            while (seconds > 0)
+            {
+                if (skipTimer)
+                {
+                    break;
+                }
+
+                groupHub.SetTimer(seconds);
+
+                await Task.Delay(1000);
+                seconds--;
+            }
         }
 
         private void PopulateHands()
@@ -120,6 +143,7 @@ namespace HumanityAgainstCards.Entities
         private void ShowNext()
         {
             currentQuestion = allQuestionCards.First();
+            maxSubmitCount = currentQuestion.BlankCount * players.Count;
 
             groupHub.NewQuestion(currentQuestion);
 
@@ -158,6 +182,14 @@ namespace HumanityAgainstCards.Entities
             votingCard.Values.Add(card.Value);
 
             players[connectionId].RemoveCardFromHand(card);
+
+            currentSubmitCount++;
+
+            // skip the timer if the max number of submitted cards has been reached
+            if (currentSubmitCount == maxSubmitCount)
+            {
+                skipTimer = true;
+            }
         }
 
         public void SubmitVote(Guid cardId)
@@ -167,6 +199,14 @@ namespace HumanityAgainstCards.Entities
                 .SingleOrDefault();
 
             card.Votes++;
+
+            currentVoteCount++;
+
+            // skip the timer if the max number of votes has been reached
+            if (currentVoteCount == maxVoteCount)
+            {
+                skipTimer = true;
+            }
         }
 
         private void CalculateAndShowWinningCards()

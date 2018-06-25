@@ -98,17 +98,8 @@
         }
     };
 
-    gameHub.client.startTimer = function (seconds) {
-        var x = setInterval(function () {
-            seconds--;
-
-            $("#timer").text(seconds);
-
-            if (seconds <= 0) {
-                clearInterval(x);
-                $("#timer").text("0");
-            }
-        }, 1000);
+    gameHub.client.setTimer = function (seconds) {
+        $("#timer").text(seconds);
     };
 
     $.connection.hub.start().done(function () {

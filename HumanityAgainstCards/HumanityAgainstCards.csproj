@@ -87,6 +87,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
     <None Include="scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="index.html" />
     <Content Include="scripts\game.js" />
