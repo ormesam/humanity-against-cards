@@ -13,13 +13,13 @@ namespace HumanityAgainstCards.Hubs
             {
                 await Groups.Add(Context.ConnectionId, roomCode);
 
-                Controller.Instance.JoinGroup(Context.ConnectionId, roomCode, name);
+                Controller.Instance.JoinGame(Context.ConnectionId, roomCode, name);
             }
         }
 
         public async Task CreateGame(string hostName)
         {
-            string roomCode = Controller.Instance.CreateGroup(Context.ConnectionId, hostName);
+            string roomCode = Controller.Instance.CreateGame(Context.ConnectionId, hostName);
 
             await Groups.Add(Context.ConnectionId, roomCode);
 
@@ -39,6 +39,13 @@ namespace HumanityAgainstCards.Hubs
         public void SubmitVote(string roomCode, Guid cardId)
         {
             Controller.Instance.SubmitVote(roomCode, cardId);
+        }
+
+        public override async Task OnDisconnected(bool stopCalled)
+        {
+            Controller.Instance.LeaveGame(Context.ConnectionId);
+
+            await base.OnDisconnected(stopCalled);
         }
     }
 }

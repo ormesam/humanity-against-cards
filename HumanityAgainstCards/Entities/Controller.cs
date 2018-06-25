@@ -35,7 +35,7 @@ namespace HumanityAgainstCards.Entities
 
         #region Join / Create
 
-        public string CreateGroup(string connectionId, string hostName)
+        public string CreateGame(string connectionId, string hostName)
         {
             string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -46,7 +46,7 @@ namespace HumanityAgainstCards.Entities
             // Don't want to create a group with a duplicate room code
             if (Games.ContainsKey(roomCode))
             {
-                return CreateGroup(connectionId, hostName);
+                return CreateGame(connectionId, hostName);
             }
 
             Game game = new Game(roomCode);
@@ -55,7 +55,7 @@ namespace HumanityAgainstCards.Entities
             return roomCode;
         }
 
-        public void JoinGroup(string connectionId, string roomCode, string name)
+        public void JoinGame(string connectionId, string roomCode, string name)
         {
             if (Games.ContainsKey(roomCode))
             {
@@ -66,6 +66,27 @@ namespace HumanityAgainstCards.Entities
                 throw new Exception("Unable to find group...");
             }
         }
+
+        #endregion
+
+        #region Leave
+
+        public void LeaveGame(string connectionId)
+        {
+            Game game = Games
+                .Where(row => row.Value.ContainsPlayer(connectionId))
+                .Select(row => row.Value)
+                .SingleOrDefault();
+
+            game.RemovePlayer(connectionId);
+
+            if (game.Status == GameStatus.Stopped)
+            {
+                Games.Remove(game.RoomCode);
+            }
+        }
+
+        #endregion
 
         public void StartGame(string roomCode)
         {
@@ -81,7 +102,5 @@ namespace HumanityAgainstCards.Entities
         {
             Games[roomCode].SubmitVote(cardId);
         }
-
-        #endregion
     }
 }

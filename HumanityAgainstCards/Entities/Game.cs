@@ -11,11 +11,9 @@ namespace HumanityAgainstCards.Entities
     {
         private const int numberOfCardsInHand = 10;
 
-        private string roomCode;
         private IDictionary<string, Player> players;
         private IList<QuestionCard> allQuestionCards;
         private IList<AnswerCard> allAnswerCards;
-        private GameStatus status;
 
         private QuestionCard currentQuestion;
         private IList<VotingCard> votes;
@@ -27,14 +25,17 @@ namespace HumanityAgainstCards.Entities
 
         private IClient groupHub => GetGroupHub();
 
+        public GameStatus Status { get; private set; }
+        public string RoomCode { get; private set; }
+
         public Game(string roomCode)
         {
             players = new Dictionary<string, Player>();
             allQuestionCards = new List<QuestionCard>();
             allAnswerCards = new List<AnswerCard>();
 
-            this.roomCode = roomCode;
-            status = GameStatus.Created;
+            this.RoomCode = roomCode;
+            Status = GameStatus.Created;
         }
 
         private void PopulateCards()
@@ -53,23 +54,23 @@ namespace HumanityAgainstCards.Entities
 
             groupHub.PlayerJoined(name);
 
-            UpdatePlayerLeaderboard();
+            UpdateLeaderboard();
 
-            player.GetPlayerHub().RoomCodeChanged(roomCode);
+            player.GetPlayerHub().RoomCodeChanged(RoomCode);
         }
 
         public async Task Start()
         {
-            if (status != GameStatus.Created)
+            if (Status != GameStatus.Created)
             {
                 return;
             }
 
-            status = GameStatus.Running;
+            Status = GameStatus.Running;
 
             PopulateCards();
 
-            while (allQuestionCards.Any())
+            while (allQuestionCards.Any() && Status == GameStatus.Running)
             {
                 currentQuestion = null;
                 maxSubmitCount = 0;
@@ -95,7 +96,7 @@ namespace HumanityAgainstCards.Entities
                 await StartTimer(10);
             }
 
-            status = GameStatus.Stopped;
+            Status = GameStatus.Stopped;
         }
 
         private async Task StartTimer(int seconds)
@@ -227,10 +228,34 @@ namespace HumanityAgainstCards.Entities
 
             groupHub.ShowWinningCard(winner.Name, winningCard.Id, winningCard.Votes);
 
-            UpdatePlayerLeaderboard();
+            UpdateLeaderboard();
         }
 
-        private void UpdatePlayerLeaderboard()
+        public bool ContainsPlayer(string connectionId)
+        {
+            return players.ContainsKey(connectionId);
+        }
+
+        public void RemovePlayer(string connectionId)
+        {
+            if (ContainsPlayer(connectionId))
+            {
+                string playerName = players[connectionId].Name;
+
+                players.Remove(connectionId);
+
+                groupHub.PlayerLeft(playerName);
+
+                UpdateLeaderboard();
+            }
+
+            if (!players.Any())
+            {
+                Status = GameStatus.Stopped;
+            }
+        }
+
+        private void UpdateLeaderboard()
         {
             IList<Player> leaderboard = players.Values
                 .OrderByDescending(row => row.Points)
@@ -241,7 +266,7 @@ namespace HumanityAgainstCards.Entities
 
         private IClient GetGroupHub()
         {
-            return GlobalHost.ConnectionManager.GetHubContext<GameHub, IClient>().Clients.Group(roomCode);
+            return GlobalHost.ConnectionManager.GetHubContext<GameHub, IClient>().Clients.Group(RoomCode);
         }
     }
 }

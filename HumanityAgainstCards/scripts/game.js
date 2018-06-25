@@ -37,6 +37,10 @@
         console.log("Player joined: " + name);
     };
 
+    gameHub.client.playerLeft = function (name) {
+        console.log("Player left: " + name);
+    };
+
     gameHub.client.roomCodeChanged = function (code) {
         console.log("Room code: " + code);
         $("#room-code").text(code);
