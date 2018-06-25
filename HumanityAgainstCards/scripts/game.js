@@ -11,7 +11,7 @@
 
         card.attr("data-id", id);
         card.addClass("card");
-        cardText.text(text);
+        cardText.html(text);
 
         card.append(cardText);
 
@@ -26,7 +26,7 @@
         for (var i = 0; i < textValues.length; i++) {
             var text = textValues[i];
             var cardText = $("<p>");
-            cardText.text(text);
+            cardText.html(text);
             card.append(cardText);
         }
 
@@ -55,7 +55,7 @@
         answersSelected = 0;
         canVote = true;
 
-        $("#question").text(question.Value);
+        $("#question").html(question.Value);
     };
 
     gameHub.client.showHand = function (hand) {
@@ -153,7 +153,7 @@
 
             $(this).addClass("selected");
 
-            console.log("Submitted card " + cardId);
+            console.log("Submitted card " + $(this).text());
         })
 
         $(document).on("click", ".card-vote", function () {
