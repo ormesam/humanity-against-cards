@@ -35,7 +35,7 @@ namespace HumanityAgainstCards.Entities
 
         #region Join / Create
 
-        public string CreateGame(string connectionId, string hostName)
+        public string CreateGame()
         {
             string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -46,7 +46,7 @@ namespace HumanityAgainstCards.Entities
             // Don't want to create a group with a duplicate room code
             if (Games.ContainsKey(roomCode))
             {
-                return CreateGame(connectionId, hostName);
+                return CreateGame();
             }
 
             Game game = new Game(roomCode);

@@ -19,7 +19,7 @@ namespace HumanityAgainstCards.Hubs
 
         public async Task CreateGame(string hostName)
         {
-            string roomCode = Controller.Instance.CreateGame(Context.ConnectionId, hostName);
+            string roomCode = Controller.Instance.CreateGame();
 
             await Groups.Add(Context.ConnectionId, roomCode);
 
