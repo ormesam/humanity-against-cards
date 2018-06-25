@@ -77,10 +77,10 @@
         }
     };
 
-    gameHub.client.showWinningCard = function (player, card, votes) {
+    gameHub.client.showWinningCard = function (player, cardId, votes) {
         canVote = false;
 
-        console.log(player + " won! Card: " + card + " (Votes: " + votes + ")");
+        $(".card-vote[data-id='" + cardId + "']").addClass("winning-card");
     };
 
     gameHub.client.updateLeaderboard = function (players) {

@@ -53,6 +53,10 @@
         background-color: lightgray;
     }
 
+    .card-vote.winning-card {
+        background-color: gold;
+    }
+
 .cover {
     width: 100%;
     height: 100%;

@@ -225,7 +225,7 @@ namespace HumanityAgainstCards.Entities
             Player winner = players[winningCard.PlayerId];
             winner.Points++;
 
-            groupHub.ShowWinningCard(winner.Name, winningCard.Value, winningCard.Votes);
+            groupHub.ShowWinningCard(winner.Name, winningCard.Id, winningCard.Votes);
 
             UpdatePlayerLeaderboard();
         }

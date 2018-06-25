@@ -1,5 +1,5 @@
 ﻿using HumanityAgainstCards.Entities;
-using Microsoft.AspNet.SignalR;
+using System;
 using System.Collections.Generic;
 
 namespace HumanityAgainstCards.Hubs
@@ -11,7 +11,7 @@ namespace HumanityAgainstCards.Hubs
         void NewQuestion(AnswerCard question);
         void ShowHand(IList<AnswerCard> hand);
         void ShowVotingCards(IList<VotingCard> votingCards);
-        void ShowWinningCard(string name, string card, int voteCount);
+        void ShowWinningCard(string name, Guid cardId, int voteCount);
         void UpdateLeaderboard(IList<Player> leaderboard);
         void SetTimer(int seconds);
     }
