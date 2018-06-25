@@ -11,6 +11,7 @@ namespace HumanityAgainstCards.Hubs
         {
             if (Controller.Instance.Games.ContainsKey(roomCode))
             {
+                // add to hub groups before joining the game
                 await Groups.Add(Context.ConnectionId, roomCode);
 
                 Controller.Instance.JoinGame(Context.ConnectionId, roomCode, name);
@@ -19,6 +20,7 @@ namespace HumanityAgainstCards.Hubs
 
         public async Task CreateGame(string hostName)
         {
+            // create game, add the player to the group, then the game
             string roomCode = Controller.Instance.CreateGame();
 
             await Groups.Add(Context.ConnectionId, roomCode);

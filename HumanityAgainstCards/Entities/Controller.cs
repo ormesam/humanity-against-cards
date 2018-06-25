@@ -90,6 +90,7 @@ namespace HumanityAgainstCards.Entities
 
         public void StartGame(string roomCode)
         {
+            // waiting for this would take a loooooong time
             Task.Run(() => Games[roomCode].Start());
         }
 
