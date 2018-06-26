@@ -17,6 +17,7 @@
     width: 250px;
     height: 350px;
     padding: 10px;
+    border:solid 1px darkgrey;
     border-radius: 10px;
     display: inline-block;
     vertical-align: top;
@@ -114,4 +115,15 @@
 
 .hidden {
     display: none;
+}
+
+@media screen and (max-width: 600px) {
+
+    .card-hand {
+        margin-top: -225px;
+    }
+
+        .card-hand:first-child {
+            margin-top: 0;
+        }
 }
