@@ -3,21 +3,11 @@
     background-color: #E9EBEE;
 }
 
-.left {
-    float: left;
-    width: 80%;
-    min-height: 500px;
-}
-
-.right {
-    float: right;
-}
-
 .card {
     width: 250px;
     height: 350px;
     padding: 10px;
-    border:solid 1px darkgrey;
+    border: solid 1px darkgrey;
     border-radius: 10px;
     display: inline-block;
     vertical-align: top;
@@ -27,6 +17,7 @@
     transition: 0.3s;
     margin: 5px;
     background-color: white;
+    position:relative;
 }
 
     .card:hover {
@@ -111,6 +102,34 @@
 
 #start {
     cursor: pointer;
+}
+
+.room-code {
+    text-align: center;
+}
+
+    .room-code span {
+        font-weight: bold;
+    }
+
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap:wrap;
+}
+
+#timer {
+    font-family: 'Orbitron', sans-serif;
+    color: white;
+    position: absolute;
+    bottom: 0px;
+    right:0;
+    padding:10px;
+}
+
+#card-header{
+    text-align:center;
 }
 
 .hidden {

@@ -9,25 +9,22 @@
 
     <!-- Styles -->
     <link href="styles/site.css" rel="stylesheet" />
+    <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
 </head>
 <body>
-    <div class="card card-question">
-        <p id="question"><span id="start">Click here to start the game...</span></p>
-    </div>
-    <div class="right">
-        <h1>Room Code: <span id="room-code"></span></h1>
+    <p class="room-code">Room Code: <span id="room-code"></span></p>
+    <!--<div class="right">
         <table id="leaderboard"></table>
-    </div>
-    <h2>Timer: <span id="timer"></span></h2>
-    <div id="hand-section" class="hidden">
-        <h2>Hand</h2>
-        <div id="hand">
+    </div>-->
+    <div class="card-container">
+        <div class="card card-question">
+            <p id="question"><span id="start">Click here to start the game...</span></p>
+            <div id="timer"></div>
         </div>
     </div>
-    <div id="voting-section" class="hidden">
-        <h2>Vote for your favorite answer</h2>
-        <div id="answers">
-        </div>
+
+    <h2 id="card-header"></h2>
+    <div id="cards" class="card-container">
     </div>
 
     <div class="cover">
@@ -37,7 +34,6 @@
             <button id="join-game" type="button" class="btn btn-join">Join Game</button>
         </div>
     </div>
-
     <!--Script references. -->
     <script src="scripts/jquery-3.3.1.min.js"></script>
     <script src="scripts/jquery.signalR-2.2.3.min.js"></script>

@@ -48,7 +48,6 @@
     };
 
     gameHub.client.newQuestion = function (question) {
-        $("#voting-section").addClass("hidden");
         console.log("New Question: " + question.Value + " (" + question.BlankCount + " blanks)");
 
         currentQuestion = question;
@@ -59,25 +58,24 @@
     };
 
     gameHub.client.showHand = function (hand) {
-        $("#hand").html("");
-        $("#hand-section").removeClass("hidden");
+        $("#cards").html("");
+        $("#card-header").text("Hand");
 
         for (var i = 0; i < hand.length; i++) {
             var card = createCard(hand[i].Id, hand[i].Value);
             card.addClass("card-hand");
-            $("#hand").append(card);
+            $("#cards").append(card);
         }
     };
 
     gameHub.client.showVotingCards = function (cards) {
-        $("#answers").html("");
-        $("#hand-section").addClass("hidden");
-        $("#voting-section").removeClass("hidden");
+        $("#cards").html("");
+        $("#card-header").text("Vote for your favourite card!");
 
         for (var i = 0; i < cards.length; i++) {
             var card = createVotingCard(cards[i].Id, cards[i].Values);
             card.addClass("card-vote");
-            $("#answers").append(card);
+            $("#cards").append(card);
         }
     };
 
