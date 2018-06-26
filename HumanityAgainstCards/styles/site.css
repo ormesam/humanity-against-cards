@@ -17,14 +17,14 @@
     transition: 0.3s;
     margin: 5px;
     background-color: white;
-    position:relative;
+    position: relative;
 }
 
     .card:hover {
         box-shadow: 0 8px 16px 0 rgba(0,0,0,0.5);
     }
 
-.card-question {
+.card-dark {
     background-color: black;
     color: white;
 }
@@ -116,7 +116,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-wrap:wrap;
+    flex-wrap: wrap;
 }
 
 #timer {
@@ -124,13 +124,27 @@
     color: white;
     position: absolute;
     bottom: 0px;
-    right:0;
-    padding:10px;
+    right: 0;
+    padding: 10px;
 }
 
-#card-header{
-    text-align:center;
+#card-header {
+    text-align: center;
 }
+
+.leader-board-container {
+    position: absolute;
+    top: 55px;
+    right: 0;
+}
+
+#leaderboard {
+    width: 100%;
+}
+
+    #leaderboard td:last-child {
+        text-align: right;
+    }
 
 .hidden {
     display: none;
@@ -145,4 +159,10 @@
         .card-hand:first-child {
             margin-top: 0;
         }
+}
+
+@media screen and (max-width: 900px) {
+    .leader-board-container {
+        display: none;
+    }
 }

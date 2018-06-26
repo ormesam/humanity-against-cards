@@ -13,11 +13,14 @@
 </head>
 <body>
     <p class="room-code">Room Code: <span id="room-code"></span></p>
-    <!--<div class="right">
+
+    <div class="card card-dark leader-board-container">
+        <p>Leaderboard</p>
         <table id="leaderboard"></table>
-    </div>-->
+    </div>
+
     <div class="card-container">
-        <div class="card card-question">
+        <div class="card card-dark">
             <p id="question"><span id="start">Click here to start the game...</span></p>
             <div id="timer"></div>
         </div>
@@ -34,6 +37,7 @@
             <button id="join-game" type="button" class="btn btn-join">Join Game</button>
         </div>
     </div>
+
     <!--Script references. -->
     <script src="scripts/jquery-3.3.1.min.js"></script>
     <script src="scripts/jquery.signalR-2.2.3.min.js"></script>
