@@ -11,7 +11,7 @@ namespace HumanityAgainstCards.Entities
     {
         private const int numberOfCardsInHand = 10;
 
-        private IDictionary<string, Player> players;
+        private IList<Player> players;
         private IList<QuestionCard> allQuestionCards;
         private IList<AnswerCard> allAnswerCards;
 
@@ -30,7 +30,7 @@ namespace HumanityAgainstCards.Entities
 
         public Game(string roomCode)
         {
-            players = new Dictionary<string, Player>();
+            players = new List<Player>();
             allQuestionCards = new List<QuestionCard>();
             allAnswerCards = new List<AnswerCard>();
 
@@ -50,7 +50,7 @@ namespace HumanityAgainstCards.Entities
         {
             Player player = new Player(connectionId, name);
 
-            players.Add(connectionId, player);
+            players.Add(player);
 
             groupHub.PlayerJoined(name);
 
@@ -121,14 +121,14 @@ namespace HumanityAgainstCards.Entities
         {
             foreach (var player in players)
             {
-                while (player.Value.Hand.Count < numberOfCardsInHand && allAnswerCards.Any())
+                while (player.Hand.Count < numberOfCardsInHand && allAnswerCards.Any())
                 {
                     var card = allAnswerCards
                         .Where(row => row.IsAvailable)
                         .FirstOrDefault();
 
-                    player.Value.AddToHand(card);
-                    card.PlayerId = player.Key;
+                    player.AddToHand(card);
+                    card.PlayerId = player.ConnectionId;
                 }
             }
         }
@@ -137,7 +137,7 @@ namespace HumanityAgainstCards.Entities
         {
             foreach (var player in players)
             {
-                player.Value.ShowHand();
+                player.ShowHand();
             }
         }
 
@@ -182,7 +182,7 @@ namespace HumanityAgainstCards.Entities
 
             votingCard.Values.Add(card.Value);
 
-            players[connectionId].RemoveCardFromHand(card);
+            GetPlayer(connectionId).RemoveCardFromHand(card);
 
             currentSubmitCount++;
 
@@ -218,34 +218,45 @@ namespace HumanityAgainstCards.Entities
                 return;
             }
 
-            // will need to account for multiple cards with the same votes at somepoint
+            // will need to account for multiple cards with the same number of votes at somepoint
             var winningCard = votes
                 .OrderByDescending(row => row.Votes)
                 .FirstOrDefault();
 
-            // TODO: make sure player hasn't left!
-            Player winner = players[winningCard.PlayerId];
-            winner.Points++;
+            // make sure player hasn't left!
+            Player winner = GetPlayer(winningCard.PlayerId);
+            string winnerName;
 
-            groupHub.ShowWinningCard(winner.Name, winningCard.Id, winningCard.Votes);
+            if (winner != null)
+            {
+                winner.Points++;
+                winnerName = winner.Name;
+            }
+            else
+            {
+                winnerName = "Non-existant Player";
+            }
+
+
+            groupHub.ShowWinningCard(winnerName, winningCard.Id, winningCard.Votes);
 
             UpdateLeaderboard();
         }
 
         public bool ContainsPlayer(string connectionId)
         {
-            return players.ContainsKey(connectionId);
+            return GetPlayer(connectionId) != null;
         }
 
         public void RemovePlayer(string connectionId)
         {
             if (ContainsPlayer(connectionId))
             {
-                string playerName = players[connectionId].Name;
+                Player player = GetPlayer(connectionId);
 
-                players.Remove(connectionId);
+                players.Remove(player);
 
-                groupHub.PlayerLeft(playerName);
+                groupHub.PlayerLeft(player.Name);
 
                 UpdateLeaderboard();
             }
@@ -258,11 +269,18 @@ namespace HumanityAgainstCards.Entities
 
         private void UpdateLeaderboard()
         {
-            IList<Player> leaderboard = players.Values
+            IList<Player> leaderboard = players
                 .OrderByDescending(row => row.Points)
                 .ToList();
 
             groupHub.UpdateLeaderboard(leaderboard);
+        }
+
+        private Player GetPlayer(string connectionId)
+        {
+            return players
+                .Where(row => row.ConnectionId == connectionId)
+                .SingleOrDefault();
         }
 
         private IClient GetGroupHub()
