@@ -93,7 +93,7 @@ namespace HumanityAgainstCards.Entities
 
                 CalculateAndShowWinningCards();
 
-                await StartTimer(10);
+                await StartTimer(8);
             }
 
             Status = GameStatus.Stopped;
@@ -223,6 +223,7 @@ namespace HumanityAgainstCards.Entities
                 .OrderByDescending(row => row.Votes)
                 .FirstOrDefault();
 
+            // TODO: make sure player hasn't left!
             Player winner = players[winningCard.PlayerId];
             winner.Points++;
 
