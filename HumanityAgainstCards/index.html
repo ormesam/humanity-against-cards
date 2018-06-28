@@ -14,11 +14,6 @@
 <body>
     <p class="room-code">Room Code: <span id="room-code"></span></p>
 
-    <div class="card card-dark leader-board-container">
-        <p>Leaderboard</p>
-        <table id="leaderboard"></table>
-    </div>
-
     <div class="card-container">
         <div class="card card-dark">
             <p id="question"><span id="start">Click here to start the game...</span></p>
@@ -30,8 +25,16 @@
     <div id="cards" class="card-container">
     </div>
 
+    <h2 class="text-centre">Leaderboard</h2>
+    <div class="card-container">
+        <div class="card card-dark">
+            <table id="leaderboard"></table>
+        </div>
+    </div>
+
     <div class="cover">
         <div class="login">
+            <h1 class="text-centre">Humanity Against Cards</h1>
             <button id="create-game" type="button" class="btn btn-create">Create Game</button>
             <p class="text-centre">OR</p>
             <button id="join-game" type="button" class="btn btn-join">Join Game</button>

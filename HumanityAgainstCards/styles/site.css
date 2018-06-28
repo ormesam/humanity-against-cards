@@ -132,12 +132,6 @@
     text-align: center;
 }
 
-.leader-board-container {
-    position: absolute;
-    top: 55px;
-    right: 0;
-}
-
 #leaderboard {
     width: 100%;
 }
@@ -159,10 +153,4 @@
         .card-hand:first-child {
             margin-top: 0;
         }
-}
-
-@media screen and (max-width: 900px) {
-    .leader-board-container {
-        display: none;
-    }
 }

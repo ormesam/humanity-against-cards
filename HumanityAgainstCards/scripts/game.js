@@ -3,7 +3,8 @@
     var roomCode;
     var currentQuestion;
     var answersSelected;
-    var canVote;
+    var canVote = false;
+    var isWaitingForNextRound = false;
 
     function createCard(id, text) {
         var card = $("<div>");
@@ -50,6 +51,7 @@
     gameHub.client.newQuestion = function (question) {
         console.log("New Question: " + question.Value + " (" + question.BlankCount + " blanks)");
 
+        isWaitingForNextRound = false;
         currentQuestion = question;
         answersSelected = 0;
         canVote = true;
@@ -58,6 +60,10 @@
     };
 
     gameHub.client.showHand = function (hand) {
+        if (isWaitingForNextRound) {
+            return;
+        }
+
         $("#cards").html("");
         $("#card-header").text("Hand");
 
@@ -69,6 +75,10 @@
     };
 
     gameHub.client.showVotingCards = function (cards) {
+        if (isWaitingForNextRound) {
+            return;
+        }
+
         $("#cards").html("");
         $("#card-header").text("Vote for your favourite card!");
 
@@ -80,6 +90,10 @@
     };
 
     gameHub.client.showWinningCard = function (player, cardId, votes) {
+        if (isWaitingForNextRound) {
+            return;
+        }
+
         canVote = false;
 
         $(".card-vote[data-id='" + cardId + "']").addClass("winning-card");
@@ -103,6 +117,10 @@
     };
 
     gameHub.client.setTimer = function (seconds) {
+        if (isWaitingForNextRound) {
+            return;
+        }
+
         $("#timer").text(seconds);
     };
 
@@ -129,8 +147,13 @@
                 return;
             }
 
-            gameHub.server.joinGame(code, playerName).then(function () {
-                $("#question").text("Waiting for the next round...");
+            gameHub.server.joinGame(code, playerName).then(function (gameInProgress) {
+                if (gameInProgress) {
+                    $("#question").text("Waiting for the next round...");
+                    $("#timer").text("WAITING...");
+                    isWaitingForNextRound = true;
+                }
+
                 $(".cover").addClass("hidden");
             });
         });
