@@ -1,8 +1,8 @@
 ﻿using Microsoft.Owin;
 using Owin;
 
-[assembly: OwinStartup(typeof(SignalRChat.Startup))]
-namespace SignalRChat
+[assembly: OwinStartup(typeof(HumanityAgainstCards.Startup))]
+namespace HumanityAgainstCards
 {
     public class Startup
     {
