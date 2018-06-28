@@ -46,19 +46,6 @@ namespace HumanityAgainstCards.Entities
             allAnswerCards = generator.GenerateAnswers();
         }
 
-        public void AddPlayer(string connectionId, string name)
-        {
-            Player player = new Player(connectionId, name);
-
-            players.Add(player);
-
-            groupHub.PlayerJoined(name);
-
-            UpdateLeaderboard();
-
-            player.GetPlayerHub().RoomCodeChanged(RoomCode);
-        }
-
         public async Task Start()
         {
             if (Status != GameStatus.Created)
@@ -243,9 +230,26 @@ namespace HumanityAgainstCards.Entities
             UpdateLeaderboard();
         }
 
+        #region Add / Remove Player
+
         public bool ContainsPlayer(string connectionId)
         {
             return GetPlayer(connectionId) != null;
+        }
+
+        public GameStatus AddPlayer(string connectionId, string name)
+        {
+            Player player = new Player(connectionId, name);
+
+            players.Add(player);
+
+            groupHub.PlayerJoined(name);
+
+            UpdateLeaderboard();
+
+            player.GetPlayerHub().RoomCodeChanged(RoomCode);
+
+            return Status;
         }
 
         public void RemovePlayer(string connectionId)
@@ -266,6 +270,8 @@ namespace HumanityAgainstCards.Entities
                 Status = GameStatus.Stopped;
             }
         }
+
+        #endregion
 
         private void UpdateLeaderboard()
         {

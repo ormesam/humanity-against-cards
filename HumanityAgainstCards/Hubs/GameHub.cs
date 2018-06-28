@@ -7,15 +7,22 @@ namespace HumanityAgainstCards.Hubs
 {
     public class GameHub : Hub<IClient>
     {
-        public async Task JoinGame(string roomCode, string name)
+        public async Task<bool> JoinGame(string roomCode, string name)
         {
+            roomCode = roomCode.ToUpper().Trim();
+
             if (Controller.Instance.Games.ContainsKey(roomCode))
             {
                 // add to hub groups before joining the game
                 await Groups.Add(Context.ConnectionId, roomCode);
 
-                Controller.Instance.JoinGame(Context.ConnectionId, roomCode, name);
+                GameStatus status = Controller.Instance.JoinGame(Context.ConnectionId, roomCode, name);
+
+                // return bool indicating if the game is running or not
+                return status == GameStatus.Running;
             }
+
+            return false;
         }
 
         public async Task CreateGame(string hostName)
@@ -30,16 +37,22 @@ namespace HumanityAgainstCards.Hubs
 
         public void Start(string roomCode)
         {
+            roomCode = roomCode.ToUpper().Trim();
+
             Controller.Instance.StartGame(roomCode);
         }
 
         public void SubmitCard(string roomCode, Guid cardId)
         {
+            roomCode = roomCode.ToUpper().Trim();
+
             Controller.Instance.SubmitCard(roomCode, Context.ConnectionId, cardId);
         }
 
         public void SubmitVote(string roomCode, Guid cardId)
         {
+            roomCode = roomCode.ToUpper().Trim();
+
             Controller.Instance.SubmitVote(roomCode, cardId);
         }
 

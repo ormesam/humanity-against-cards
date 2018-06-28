@@ -55,11 +55,11 @@ namespace HumanityAgainstCards.Entities
             return roomCode;
         }
 
-        public void JoinGame(string connectionId, string roomCode, string name)
+        public GameStatus JoinGame(string connectionId, string roomCode, string name)
         {
             if (Games.ContainsKey(roomCode))
             {
-                Games[roomCode].AddPlayer(connectionId, name);
+                return Games[roomCode].AddPlayer(connectionId, name);
             }
             else
             {

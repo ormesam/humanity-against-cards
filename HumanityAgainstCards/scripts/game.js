@@ -130,6 +130,7 @@
             }
 
             gameHub.server.joinGame(code, playerName).then(function () {
+                $("#question").text("Waiting for the next round...");
                 $(".cover").addClass("hidden");
             });
         });
