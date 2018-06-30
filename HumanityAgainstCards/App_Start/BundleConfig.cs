@@ -9,11 +9,10 @@ namespace HumanityAgainstCards
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                "~/Scripts/jquery-{version}.js",
-                "~/Scripts/jquery.signalR-{version}.js"));
+                "~/Scripts/jquery-{version}.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/game").Include(
-                "~/Scripts/game.js"));
+            bundles.Add(new ScriptBundle("~/bundles/signalR").Include(
+                "~/Scripts/jquery.signalR-{version}.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include("~/Content/site.css"));
         }

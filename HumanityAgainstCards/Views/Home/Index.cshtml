@@ -1,28 +1,34 @@
-﻿<p class="room-code">Room Code: <span id="room-code"></span></p>
+﻿@section scripts{
+    <script>
+        $(function () {
+            $("#create-game").click(function () {
+                window.location = "@Url.Action("createnew")";
+            });
 
-<div class="card-container">
-    <div class="card card-dark">
-        <p id="question"><span id="start">Click here to start the game...</span></p>
-        <div id="timer"></div>
-    </div>
-</div>
+            $("#join-game").click(function () {
+                var roomCode = $("#room-code").val();
 
-<h2 id="card-header"></h2>
-<div id="cards" class="card-container">
-</div>
+                if (roomCode === "" || roomCode === null) {
+                    // show required message
+                    return;
+                }
 
-<h2 class="text-centre">Leaderboard</h2>
-<div class="card-container">
-    <div class="card card-dark">
-        <table id="leaderboard"></table>
-    </div>
-</div>
+                if (roomCode.length !== 4) {
+                    // show message saying the room code must be 4 characters long
+                    return;
+                }
 
-<div class="cover">
-    <div class="login">
-        <h1 class="text-centre">Humanity Against Cards</h1>
-        <button id="create-game" type="button" class="btn btn-create">Create Game</button>
-        <p class="text-centre">OR</p>
-        <button id="join-game" type="button" class="btn btn-join">Join Game</button>
-    </div>
+                window.location = "@Url.Action("play")?room=" + roomCode;
+            });
+        });
+    </script>
+}
+
+<div class="block-centre">
+    <h1 class="text-centre">Humanity Against Cards</h1>
+    <button id="create-game" type="button" class="btn btn-create">Create Game</button>
+    <p class="text-centre">OR</p>
+    <label for="room-code">Room Code</label>
+    <input id="room-code" type="text" />
+    <button id="join-game" type="button" class="btn btn-join">Join Game</button>
 </div>

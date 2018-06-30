@@ -1,0 +1,214 @@
+﻿@model HumanityAgainstCards.Models.PlayModel
+@{
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/signalR")
+    <script src="signalr/hubs"></script>
+    <script>
+        $(function () {
+            var gameHub = $.connection.gameHub;
+            var roomCode = "@Model.RoomCode";
+            var currentQuestion;
+            var answersSelected;
+            var canVote = false;
+            var isWaitingForNextRound = false;
+
+            function createCard(id, text) {
+                var card = $("<div>");
+                var cardText = $("<p>");
+
+                card.attr("data-id", id);
+                card.addClass("card");
+                cardText.html(text);
+
+                card.append(cardText);
+
+                return card;
+            }
+
+            function createVotingCard(id, textValues) {
+                var card = $("<div>");
+                card.attr("data-id", id);
+                card.addClass("card");
+
+                for (var i = 0; i < textValues.length; i++) {
+                    var text = textValues[i];
+                    var cardText = $("<p>");
+                    cardText.html(text);
+                    card.append(cardText);
+                }
+
+                return card;
+            }
+
+            gameHub.client.playerJoined = function (name) {
+                console.log("Player joined: " + name);
+            };
+
+            gameHub.client.playerLeft = function (name) {
+                console.log("Player left: " + name);
+            };
+
+            gameHub.client.newQuestion = function (question) {
+                console.log("New Question: " + question.Value + " (" + question.BlankCount + " blanks)");
+
+                isWaitingForNextRound = false;
+                currentQuestion = question;
+                answersSelected = 0;
+                canVote = true;
+
+                $("#question").html(question.Value);
+            };
+
+            gameHub.client.showHand = function (hand) {
+                if (isWaitingForNextRound) {
+                    return;
+                }
+
+                $("#cards").html("");
+                $("#card-header").text("Hand");
+
+                for (var i = 0; i < hand.length; i++) {
+                    var card = createCard(hand[i].Id, hand[i].Value);
+                    card.addClass("card-hand");
+                    $("#cards").append(card);
+                }
+            };
+
+            gameHub.client.showVotingCards = function (cards) {
+                if (isWaitingForNextRound) {
+                    return;
+                }
+
+                $("#cards").html("");
+                $("#card-header").text("Vote for your favourite card!");
+
+                for (var i = 0; i < cards.length; i++) {
+                    var card = createVotingCard(cards[i].Id, cards[i].Values);
+                    card.addClass("card-vote");
+                    $("#cards").append(card);
+                }
+            };
+
+            gameHub.client.showWinningCard = function (player, cardId, votes) {
+                if (isWaitingForNextRound) {
+                    return;
+                }
+
+                canVote = false;
+
+                $(".card-vote[data-id='" + cardId + "']").addClass("winning-card");
+            };
+
+            gameHub.client.updateLeaderboard = function (players) {
+                $("#leaderboard").html("");
+
+                for (var i = 0; i < players.length; i++) {
+                    var row = $("<tr>");
+                    var name = $("<td>");
+                    var points = $("<td>");
+
+                    name.text(players[i].Name);
+                    points.text(players[i].Points);
+
+                    row.append(name);
+                    row.append(points);
+                    $("#leaderboard").append(row);
+                }
+            };
+
+            gameHub.client.setTimer = function (seconds) {
+                if (isWaitingForNextRound) {
+                    return;
+                }
+
+                $("#timer").text(seconds);
+            };
+
+            $.connection.hub.start().done(function () {
+                console.log("Connection succeeded...");
+
+                function join() {
+                    var playerName = prompt("Enter a name:", "");
+
+                    if (playerName === "") {
+                        join();
+                    }
+
+                    gameHub.server.joinGame(roomCode, playerName).then(function (gameInProgress) {
+                        if (gameInProgress) {
+                            $("#question").text("Waiting for the next round...");
+                            $("#timer").text("WAITING...");
+                            isWaitingForNextRound = true;
+                        }
+
+                        $(".cover").addClass("hidden");
+                    });
+                }
+
+                $("#start").click(function () {
+                    gameHub.server.start(roomCode);
+                });
+
+                $(document).on("click", ".card-hand", function () {
+                    if (answersSelected === currentQuestion.BlankCount) {
+                        return;
+                    }
+
+                    answersSelected++;
+
+                    var cardId = $(this).attr("data-id");
+
+                    gameHub.server.submitCard(roomCode, cardId);
+
+                    $(this).addClass("selected");
+
+                    console.log("Submitted card " + $(this).text());
+                })
+
+                $(document).on("click", ".card-vote", function () {
+                    if (!canVote) {
+                        return;
+                    }
+
+                    canVote = false;
+
+                    var cardId = $(this).attr("data-id");
+
+                    gameHub.server.submitVote(roomCode, cardId);
+
+                    $(this).addClass("selected");
+
+                    console.log("Voted for: " + $(this).text());
+                })
+
+                join();
+            })
+        });
+    </script>
+}
+
+<p class="room-code">Room Code: <span id="room-code">@Model.RoomCode</span></p>
+
+<div class="card-container">
+    <div class="card card-dark">
+        <p id="question"><span id="start">Click here to start the game...</span></p>
+        <div id="timer"></div>
+    </div>
+</div>
+
+<h2 id="card-header"></h2>
+<div id="cards" class="card-container">
+</div>
+
+<h2 class="text-centre">Leaderboard</h2>
+<div class="card-container">
+    <div class="card card-dark">
+        <table id="leaderboard"></table>
+    </div>
+</div>
+
+<dic id="cover">
+    <h1><i class="fa fa-spinner"></i></h1>
+</dic>

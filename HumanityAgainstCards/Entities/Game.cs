@@ -247,8 +247,6 @@ namespace HumanityAgainstCards.Entities
 
             UpdateLeaderboard();
 
-            player.GetPlayerHub().RoomCodeChanged(RoomCode);
-
             return Status;
         }
 

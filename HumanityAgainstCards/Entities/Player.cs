@@ -41,7 +41,7 @@ namespace HumanityAgainstCards.Entities
             Hand.Remove(card);
         }
 
-        public IClient GetPlayerHub()
+        private IClient GetPlayerHub()
         {
             return GlobalHost.ConnectionManager.GetHubContext<GameHub, IClient>().Clients.Client(ConnectionId);
         }

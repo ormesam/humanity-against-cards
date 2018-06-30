@@ -140,6 +140,30 @@
         text-align: right;
     }
 
+.block-centre {
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top:20vh;
+}
+
+label {
+    font-weight:bold;
+}
+
+input[type=text] {
+    width: 100%;
+    text-align: center;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    font-weight: bold;
+    font-size: 20px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: none;
+}
+
 .hidden {
     display: none;
 }

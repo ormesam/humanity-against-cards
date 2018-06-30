@@ -5,27 +5,27 @@ using System.Threading.Tasks;
 
 namespace HumanityAgainstCards.Entities
 {
-    public sealed class Controller
+    public sealed class GameController
     {
-        private static Controller instance;
+        private static GameController instance;
         private static readonly object _lock = new object();
         private Random random;
 
         public IDictionary<string, Game> Games { get; private set; }
 
-        private Controller()
+        private GameController()
         {
             Games = new Dictionary<string, Game>();
             random = new Random();
         }
 
-        public static Controller Instance {
+        public static GameController Instance {
             get {
                 lock (_lock)
                 {
                     if (instance == null)
                     {
-                        instance = new Controller();
+                        instance = new GameController();
                     }
 
                     return instance;
@@ -65,6 +65,11 @@ namespace HumanityAgainstCards.Entities
             {
                 throw new Exception("Unable to find group...");
             }
+        }
+
+        public bool DoesGameExist(string roomCode)
+        {
+            return Games.ContainsKey(roomCode);
         }
 
         #endregion

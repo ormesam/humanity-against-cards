@@ -12,7 +12,6 @@
     @RenderBody()
 
     @Scripts.Render("~/bundles/jquery")
-    <script src="signalr/hubs"></script>
-    @Scripts.Render("~/bundles/game")
+    @RenderSection("scripts", required: false)
 </body>
 </html>

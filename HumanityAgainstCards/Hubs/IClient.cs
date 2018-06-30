@@ -7,7 +7,6 @@ namespace HumanityAgainstCards.Hubs
     public interface IClient
     {
         void PlayerJoined(string name);
-        void RoomCodeChanged(string roomCode);
         void NewQuestion(AnswerCard question);
         void ShowHand(IList<AnswerCard> hand);
         void ShowVotingCards(IList<VotingCard> votingCards);
