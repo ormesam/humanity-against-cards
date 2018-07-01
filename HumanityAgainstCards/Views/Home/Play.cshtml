@@ -129,11 +129,11 @@
             $.connection.hub.start().done(function () {
                 console.log("Connection succeeded...");
 
-                function join() {
-                    var playerName = prompt("Enter a name:", "");
+                $("#join").click(function () {
+                    var playerName = $("#name").val();
 
-                    if (playerName === "") {
-                        join();
+                    if (playerName === "" || playerName === null) {
+                        return;
                     }
 
                     gameHub.server.joinGame(roomCode, playerName).then(function (gameInProgress) {
@@ -145,7 +145,7 @@
 
                         $(".cover").addClass("hidden");
                     });
-                }
+                });
 
                 $("#start").click(function () {
                     gameHub.server.start(roomCode);
@@ -165,7 +165,7 @@
                     $(this).addClass("selected");
 
                     console.log("Submitted card " + $(this).text());
-                })
+                });
 
                 $(document).on("click", ".card-vote", function () {
                     if (!canVote) {
@@ -181,9 +181,17 @@
                     $(this).addClass("selected");
 
                     console.log("Voted for: " + $(this).text());
-                })
+                });
 
-                join();
+                function ready() {
+                    
+                }
+
+                // show loading screen for a second more
+                setTimeout(function () {
+                    $("#loading").addClass("hidden");
+                    $("#player-details").removeClass("hidden");
+                }, 1000);
             })
         });
     </script>
@@ -210,8 +218,13 @@
 </div>
 
 <dic id="cover" class="cover">
-    <div class="block-centre text-centre">
+    <div id="loading" class="block-centre text-centre">
         <h1><i class="fa fa-spinner fa-spin"></i></h1>
         <p>Loading Humanity...</p>
+    </div>
+    <div id="player-details" class="block-centre hidden">
+        <label>Enter a name</label>
+        <input class="text-centre" type="text" id="name" />
+        <button id="join" type="button" class="btn btn-join">Join</button>
     </div>
 </dic>
