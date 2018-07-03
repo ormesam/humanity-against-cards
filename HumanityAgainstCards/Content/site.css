@@ -145,11 +145,11 @@
     max-width: 500px;
     margin-left: auto;
     margin-right: auto;
-    margin-top:20vh;
+    margin-top: 20vh;
 }
 
 label {
-    font-weight:bold;
+    font-weight: bold;
 }
 
 input[type=text] {
@@ -161,6 +161,27 @@ input[type=text] {
     font-size: 20px;
     margin-bottom: 10px;
     border-radius: 5px;
+    text-transform: uppercase;
+}
+
+::-webkit-input-placeholder { /* WebKit browsers */
+    text-transform: none;
+}
+
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    text-transform: none;
+}
+
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    text-transform: none;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+    text-transform: none;
+}
+
+::placeholder { /* Recent browsers */
+    text-transform: none;
 }
 
 .hidden {
