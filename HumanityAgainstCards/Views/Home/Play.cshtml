@@ -181,10 +181,6 @@
                     console.log("Voted for: " + $(this).text());
                 });
 
-                function ready() {
-                    
-                }
-
                 // show loading screen for a second more
                 setTimeout(function () {
                     $("#loading").addClass("hidden");
@@ -196,6 +192,7 @@
 }
 
 <p class="room-code">Room Code: <span id="room-code">@Model.RoomCode</span></p>
+<p class="text-centre">Do not leave or refresh this page.</p>
 
 <div class="card-container">
     <div class="card card-dark">
