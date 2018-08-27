@@ -74,6 +74,11 @@ namespace HumanityAgainstCards.Entities
 
                 await StartTimer(60);
 
+                if (currentSubmitCount == 0)
+                {
+                    continue;
+                }
+
                 ShowSelectedCards();
 
                 await StartTimer(60);
