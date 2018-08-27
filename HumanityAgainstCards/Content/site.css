@@ -134,6 +134,7 @@
 
 #leaderboard {
     width: 100%;
+    text-transform:uppercase;
 }
 
     #leaderboard td:last-child {
@@ -195,6 +196,14 @@ input[type=text] {
     }
 
         .card-hand:first-child {
+            margin-top: 0;
+        }
+
+    .card-vote {
+        margin-top: -225px;
+    }
+
+        .card-vote:first-child {
             margin-top: 0;
         }
 }
