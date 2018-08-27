@@ -83,6 +83,11 @@ namespace HumanityAgainstCards.Entities
 
                 await StartTimer(60);
 
+                if (currentVoteCount == 0)
+                {
+                    continue;
+                }
+
                 CalculateAndShowWinningCards();
 
                 await StartTimer(8);
