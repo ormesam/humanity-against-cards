@@ -15,4 +15,8 @@
     <ProjectReference Include="..\HumanityAgainstCards.Shared\HumanityAgainstCards.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Shared\" />
+  </ItemGroup>
+
 </Project>
