@@ -1,3 +1,4 @@
+using HumanityAgainstCards.Server.Hubs;
 using Microsoft.AspNetCore.Blazor.Server;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,6 +17,8 @@ namespace HumanityAgainstCards.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            services.AddSignalR();
 
             services.AddResponseCompression(options =>
             {
@@ -36,6 +39,11 @@ namespace HumanityAgainstCards.Server
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<TestHub>("/testhub");
+            });
 
             app.UseMvc(routes =>
             {
