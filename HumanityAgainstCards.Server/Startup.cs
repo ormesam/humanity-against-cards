@@ -42,7 +42,7 @@ namespace HumanityAgainstCards.Server
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<TestHub>("/testhub");
+                routes.MapHub<GameHub>("/gamehub");
             });
 
             app.UseMvc(routes =>

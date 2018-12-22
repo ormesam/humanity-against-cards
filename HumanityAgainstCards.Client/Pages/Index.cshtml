@@ -1,5 +1,5 @@
 ﻿@page "/"
-@using Blazor.Extensions;
+@inherits GameComponent
 
 <div class="container">
     <input type="text" id="message" class="form-control" bind="@Message" />
@@ -11,29 +11,3 @@
         }
     </ul>
 </div>
-
-@functions {
-HubConnection connection;
-string Message = "";
-IList<string> messages = new List<string>();
-
-protected override async Task OnInitAsync()
-{
-    connection = new HubConnectionBuilder().WithUrl("/testhub").Build();
-    connection.On<string, string>("broadcastMessage", this.OnBroadcastMessage);
-    await connection.StartAsync();
-}
-
-Task OnBroadcastMessage(string name, string message)
-{
-    messages.Add(name + " : " + message);
-    StateHasChanged();
-    return Task.CompletedTask;
-}
-
-async Task SendMessage()
-{
-    await connection.InvokeAsync("Send", "Blazor Client", Message);
-    Message = "";
-}
-}
