@@ -1,7 +1,10 @@
-﻿namespace HumanityAgainstCards.Shared
+﻿using System.Threading.Tasks;
+
+namespace HumanityAgainstCards.Shared
 {
     public interface IGameHub
     {
-        void Send(string message);
+        Task<string> Create(string name);
+        Task Join(string roomCode, string name);
     }
 }

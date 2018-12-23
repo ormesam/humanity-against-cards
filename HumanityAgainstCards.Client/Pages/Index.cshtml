@@ -2,8 +2,7 @@
 @inherits GameComponent
 
 <div class="container">
-    <input type="text" id="message" class="form-control" bind="@Message" />
-    <input type="button" id="sendMessage" value="Send" class="btn btn-primary" onclick="@SendMessage" />
+    <h1>@RoomCode</h1>
     <ul id="discussion">
         @foreach (var message in messages)
         {

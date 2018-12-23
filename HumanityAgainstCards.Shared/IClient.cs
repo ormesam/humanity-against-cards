@@ -4,6 +4,6 @@ namespace HumanityAgainstCards.Shared
 {
     public interface IClient
     {
-        Task BroadcastMessage(string name, string message);
+        Task PlayerJoined(string name);
     }
 }

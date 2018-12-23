@@ -1,4 +1,5 @@
-﻿using HumanityAgainstCards.Shared;
+﻿using HumanityAgainstCards.Server.Utility;
+using HumanityAgainstCards.Shared;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 
@@ -6,9 +7,32 @@ namespace HumanityAgainstCards.Server.Hubs
 {
     public class GameHub : Hub<IClient>, IGameHub
     {
-        public void Send(string message)
+        public GameController gameController;
+
+        public GameHub()
         {
-            Clients.All.BroadcastMessage(Context.ConnectionId, message);
+            gameController = new GameController(this);
+        }
+
+        public async Task<string> Create(string name)
+        {
+            string roomCode = gameController.CreateGame();
+
+            await Groups.AddToGroupAsync(Context.ConnectionId, roomCode);
+
+            await Join(roomCode, name);
+
+            return roomCode;
+        }
+
+        public async Task Join(string roomCode, string name)
+        {
+            bool joined = await gameController.JoinGame(Context.ConnectionId, roomCode, name);
+
+            if (joined)
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, roomCode);
+            }
         }
     }
 }
