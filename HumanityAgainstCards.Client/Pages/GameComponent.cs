@@ -24,7 +24,6 @@ namespace HumanityAgainstCards.Client.Pages
 
         public Task PlayerJoined(string name)
         {
-            Debug.WriteLine(name);
             messages.Add(name);
             StateHasChanged();
             return Task.CompletedTask;
