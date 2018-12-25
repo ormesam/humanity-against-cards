@@ -40,9 +40,14 @@ namespace HumanityAgainstCards.Server.Utility
             return roomCode;
         }
 
+        public bool DoesGameExist(string roomCode)
+        {
+            return Games.ContainsKey(roomCode);
+        }
+
         public async Task<bool> JoinGame(string connectionId, string roomCode, string name)
         {
-            if (Games.ContainsKey(roomCode))
+            if (DoesGameExist(roomCode))
             {
                 await Games[roomCode].AddPlayer(connectionId, name);
 

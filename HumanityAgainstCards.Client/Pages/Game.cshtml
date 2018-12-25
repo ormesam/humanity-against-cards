@@ -1,12 +1,25 @@
 ﻿@page "/game"
+@page "/game/{RoomCode}"
 @inherits GameComponent
 
 <div class="container">
     <h1>@RoomCode</h1>
-    <ul id="discussion">
-        @foreach (var message in messages)
-        {
-            <li>@message</li>
-        }
-    </ul>
+    <div class="card-container">
+        <div class="hac-card dark">
+            <p>Enter your name below.</p>
+            <input type="text" bind="@Name" />
+            <div class="hac-card-footer">
+                <button class="btn btn-outline-light" onclick="@CreateOrJoinGame">
+                    @if (IsNewGame)
+                    {
+                        <text>Create</text>
+                    }
+                    else
+                    {
+                        <text>Join</text>
+                    }
+                </button>
+            </div>
+        </div>
+    </div>
 </div>

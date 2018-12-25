@@ -1,18 +1,32 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Blazor.Services;
+@inject IUriHelper UriHelper
 
 <div class="starter-block card">
     <div class="card-body">
         <h1 class="card-title text-center">Humanity Against Cards</h1>
         <hr />
-        <button class="btn btn-block btn-primary">Create Game</button>
+        <button class="btn btn-block btn-primary" onclick="@CreateGame">Create Game</button>
         <div class="hr-sect">
             OR
         </div>
         <div class="input-group">
-            <input type="text" class="form-control" placeholder="Room Code..." aria-label="Room Code..." aria-describedby="basic-addon2">
+            <input type="text" class="form-control" placeholder="Room Code..." bind="@RoomCode" />
             <div class="input-group-append">
-                <button class="btn btn-success" type="button">Join</button>
+                <button class="btn btn-success" type="button" onclick="@JoinGame">Join</button>
             </div>
         </div>
     </div>
 </div>
+
+@functions {
+private string RoomCode { get; set; }
+
+private void CreateGame() {
+    UriHelper.NavigateTo("/game");
+}
+
+private void JoinGame() {
+    UriHelper.NavigateTo("/game/" + RoomCode);
+}
+}

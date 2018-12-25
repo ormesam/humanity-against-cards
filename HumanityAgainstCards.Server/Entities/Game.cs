@@ -20,7 +20,7 @@ namespace HumanityAgainstCards.Server.Entities
 
         public async Task AddPlayer(string connectionId, string name)
         {
-            await hubContext.PlayerJoined(name);
+            // await hubContext.PlayerJoined(name);
         }
     }
 }

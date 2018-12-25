@@ -25,7 +25,7 @@ namespace HumanityAgainstCards.Server.Hubs
             return roomCode;
         }
 
-        public async Task Join(string roomCode, string name)
+        public async Task<bool> Join(string roomCode, string name)
         {
             bool joined = await gameController.JoinGame(Context.ConnectionId, roomCode, name);
 
@@ -33,6 +33,8 @@ namespace HumanityAgainstCards.Server.Hubs
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, roomCode);
             }
+
+            return joined;
         }
     }
 }

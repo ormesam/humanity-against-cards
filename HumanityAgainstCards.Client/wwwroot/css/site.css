@@ -1,7 +1,7 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Helvetica','Arial',sans-serif;
     background-color: #e9ebee;
 }
 
@@ -57,4 +57,53 @@ app {
         font-size: 0px;
         line-height: 0px;
         margin: 0px 8px;
+    }
+
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.hac-card {
+    width: 250px;
+    height: 350px;
+    padding: 10px;
+    border: solid 1px #a9a9a9;
+    border-radius: 10px;
+    display: inline-block;
+    vertical-align: top;
+    font-size: 22px;
+    font-weight: bold;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,.5);
+    transition: .3s;
+    margin: 5px;
+    background-color: white;
+    position: relative;
+}
+
+    .hac-card.dark {
+        background-color: black;
+        color: white;
+    }
+
+    .hac-card input[type="text"] {
+        background: rgba(0, 0, 0, 0);
+        border: none;
+        outline: none;
+        border-bottom: white 1px solid;
+        color: white;
+        font-size: 22px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .hac-card .hac-card-footer {
+        font-family: 'Orbitron',sans-serif;
+        color: #fff;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        padding: 10px;
     }
