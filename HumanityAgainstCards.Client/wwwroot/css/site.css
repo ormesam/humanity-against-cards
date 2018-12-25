@@ -1,7 +1,12 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
-html, body {
+body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #e9ebee;
+}
+
+img {
+    width: 100%;
 }
 
 app {
@@ -11,12 +16,45 @@ app {
 }
 
 #loading-screen {
-    width:200px;
-    margin-left:auto;
-    margin-right:auto;
-    margin-top:40vh;
+    width: 400px;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 40vh;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
 }
 
-img {
-    width:100%;
+    #loading-screen img {
+        width: 200px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+.starter-block {
+    margin-top: 20vh;
+    max-width: 90%;
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
 }
+
+.hr-sect {
+    display: flex;
+    flex-basis: 100%;
+    align-items: center;
+    color: rgba(0, 0, 0, 0.35);
+    margin: 8px 0px;
+}
+
+    .hr-sect::before, .hr-sect::after {
+        content: "";
+        flex-grow: 1;
+        background: rgba(0, 0, 0, 0.35);
+        height: 1px;
+        font-size: 0px;
+        line-height: 0px;
+        margin: 0px 8px;
+    }
