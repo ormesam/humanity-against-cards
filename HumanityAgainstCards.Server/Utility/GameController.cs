@@ -1,5 +1,6 @@
 ﻿using HumanityAgainstCards.Server.Entities;
 using HumanityAgainstCards.Server.Hubs;
+using HumanityAgainstCards.Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +50,7 @@ namespace HumanityAgainstCards.Server.Utility
         {
             if (DoesGameExist(roomCode))
             {
-                await Games[roomCode].AddPlayer(connectionId, name);
+                await Games[roomCode].AddPlayer(new Player(hub.Clients.Client(connectionId), connectionId, name));
 
                 return true;
             }

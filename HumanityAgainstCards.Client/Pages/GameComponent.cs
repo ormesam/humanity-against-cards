@@ -1,6 +1,8 @@
 ﻿using Blazor.Extensions;
 using HumanityAgainstCards.Shared;
+using HumanityAgainstCards.Shared.Entities;
 using Microsoft.AspNetCore.Blazor.Components;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace HumanityAgainstCards.Client.Pages
@@ -52,6 +54,34 @@ namespace HumanityAgainstCards.Client.Pages
             {
                 // go to home and show error?
             }
+        }
+
+        public async Task ShowQuestion(QuestionCard question)
+        {
+        }
+
+        public async Task ShowHand(IList<AnswerCard> hand)
+        {
+        }
+
+        public async Task SetTimer(int seconds)
+        {
+        }
+
+        public async Task ShowAnswers(IList<AnswerCardGroup> submittedAnswers)
+        {
+        }
+
+        public async Task ShowWinningCard(AnswerCardGroup winningCard)
+        {
+        }
+
+        public async Task UpdateScoreboard(IList<Player> players)
+        {
+        }
+
+        public async Task WaitForNextRound()
+        {
         }
     }
 }
