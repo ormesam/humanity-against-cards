@@ -82,5 +82,15 @@ namespace HumanityAgainstCards.Server.Utility
         {
             Task.Run(() => Games[roomCode].Start());
         }
+
+        public void Submit(string roomCode, string connectionId, Guid cardId)
+        {
+            Games[roomCode].Submit(connectionId, cardId);
+        }
+
+        public void Vote(string roomCode, string connectionId, Guid cardId)
+        {
+            Games[roomCode].Vote(connectionId, cardId);
+        }
     }
 }

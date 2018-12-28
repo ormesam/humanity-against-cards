@@ -1,6 +1,7 @@
 ﻿using HumanityAgainstCards.Server.Utility;
 using HumanityAgainstCards.Shared;
 using Microsoft.AspNetCore.SignalR;
+using System;
 using System.Threading.Tasks;
 
 namespace HumanityAgainstCards.Server.Hubs
@@ -38,6 +39,20 @@ namespace HumanityAgainstCards.Server.Hubs
         public Task Start(string roomCode)
         {
             GameController.Instance.Start(roomCode);
+
+            return Task.CompletedTask;
+        }
+
+        public Task Submit(string roomCode, Guid cardId)
+        {
+            GameController.Instance.Submit(roomCode, Context.ConnectionId, cardId);
+
+            return Task.CompletedTask;
+        }
+
+        public Task Vote(string roomCode, Guid cardId)
+        {
+            GameController.Instance.Vote(roomCode, Context.ConnectionId, cardId);
 
             return Task.CompletedTask;
         }

@@ -13,6 +13,7 @@ namespace HumanityAgainstCards.Shared.Entities
 
         public Card(string text)
         {
+            Id = Guid.NewGuid();
             Text = text;
         }
     }

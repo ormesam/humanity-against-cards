@@ -52,7 +52,7 @@
         <div class="card-container">
             @foreach (var card in Hand)
             {
-                <div class="hac-card">
+                <div class="hac-card" onclick="@(() => Submit(card))">
                     <p>@card.Text</p>
                 </div>
             }
@@ -63,7 +63,7 @@
         <div class="card-container">
             @foreach (var answer in Answers)
             {
-                <div class="hac-card">
+                <div class="hac-card" onclick="@(() => Vote(answer))">
                     @foreach (var card in answer.AnswerCards)
                     {
                         <p>@card.Text</p>

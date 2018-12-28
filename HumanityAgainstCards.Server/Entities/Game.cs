@@ -138,6 +138,25 @@ namespace HumanityAgainstCards.Server.Entities
             }
         }
 
+        public void Submit(string connectionId, Guid cardId)
+        {
+            Player player = Players
+                .Single(i => i.ConnectionId == connectionId);
+
+            AnswerCard card = player.Hand
+                .Single(i => i.Id == cardId);
+
+            selectedQuestion.SubmitAnswer(player, card);
+        }
+
+        public void Vote(string connectionId, Guid cardGroupId)
+        {
+            var cardGroup = selectedQuestion.SubmittedAnswers
+                .Single(i => i.Id == cardGroupId);
+
+            cardGroup.Votes++;
+        }
+
         public async Task AddPlayer(Player player)
         {
             Players.Add(player);

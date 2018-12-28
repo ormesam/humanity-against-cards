@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace HumanityAgainstCards.Shared.Entities
 {
@@ -15,6 +16,19 @@ namespace HumanityAgainstCards.Shared.Entities
         {
             NumberOfAnswers = numberOfAnswers;
             SubmittedAnswers = new List<AnswerCardGroup>();
+        }
+
+        public void SubmitAnswer(Player player, AnswerCard card)
+        {
+            AnswerCardGroup answerGroup = SubmittedAnswers
+                .SingleOrDefault(i => i.Player.ConnectionId == player.ConnectionId);
+
+            if (answerGroup == null)
+            {
+                answerGroup = new AnswerCardGroup(player);
+            }
+
+            answerGroup.AnswerCards.Add(card);
         }
     }
 }

@@ -2,8 +2,8 @@
 using HumanityAgainstCards.Shared;
 using HumanityAgainstCards.Shared.Entities;
 using Microsoft.AspNetCore.Blazor.Components;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -17,10 +17,13 @@ namespace HumanityAgainstCards.Client.Pages
         [Parameter]
         internal string RoomCode { get; set; }
         public bool IsNewGame => string.IsNullOrWhiteSpace(RoomCode);
+        public bool CanSubmit => SubmitCount < SelectedQuestion.NumberOfAnswers;
+        public bool CanVote { get; set; }
         public bool ShowNameEntry { get; set; }
         public bool ShowStart { get; set; }
         public string Name { get; set; }
         public int Timer = 0;
+        public int SubmitCount = 0;
         public QuestionCard SelectedQuestion { get; set; }
         public IList<AnswerCard> Hand { get; set; }
         public IList<AnswerCardGroup> Answers { get; set; }
@@ -43,6 +46,7 @@ namespace HumanityAgainstCards.Client.Pages
 
             timer = new Timer(1000);
             timer.Elapsed += Timer_Elapsed;
+            timer.Start();
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
@@ -80,7 +84,8 @@ namespace HumanityAgainstCards.Client.Pages
             ShowNameEntry = false;
         }
 
-        public async Task Start() {
+        public async Task Start()
+        {
             await connection.InvokeAsync(nameof(IGameHub.Start), RoomCode);
             ShowStart = false;
         }
@@ -100,9 +105,37 @@ namespace HumanityAgainstCards.Client.Pages
             }
         }
 
+        public async Task Submit(AnswerCard card)
+        {
+            if (!CanSubmit)
+            {
+                return;
+            }
+
+            SubmitCount++;
+
+            card.Submitted = true;
+
+            await connection.InvokeAsync(nameof(IGameHub.Submit), RoomCode, card.Id);
+        }
+
+        public async Task Vote(AnswerCardGroup card)
+        {
+            if (!CanVote)
+            {
+                return;
+            }
+
+            CanVote = false;
+
+            await connection.InvokeAsync(nameof(IGameHub.Vote), RoomCode, card.Id);
+        }
+
         public Task ShowQuestion(QuestionCard question)
         {
             WinningCard = null;
+            CanVote = true;
+            SubmitCount = 0;
             SelectedQuestion = question;
             StateHasChanged();
             return Task.CompletedTask;
