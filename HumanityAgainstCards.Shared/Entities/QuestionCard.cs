@@ -7,6 +7,10 @@ namespace HumanityAgainstCards.Shared.Entities
         public int NumberOfAnswers { get; set; }
         public IList<AnswerCardGroup> SubmittedAnswers { get; set; }
 
+        public QuestionCard() : base()
+        {
+        }
+
         public QuestionCard(string text, int numberOfAnswers) : base(text)
         {
             NumberOfAnswers = numberOfAnswers;

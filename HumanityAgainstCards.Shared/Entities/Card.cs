@@ -7,6 +7,10 @@ namespace HumanityAgainstCards.Shared.Entities
         public Guid Id { get; set; }
         public string Text { get; set; }
 
+        public Card()
+        {
+        }
+
         public Card(string text)
         {
             Text = text;

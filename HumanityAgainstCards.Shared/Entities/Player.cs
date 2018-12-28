@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace HumanityAgainstCards.Shared.Entities
@@ -12,6 +11,10 @@ namespace HumanityAgainstCards.Shared.Entities
         public IList<AnswerCard> Hand { get; set; }
 
         private IClient hubContext;
+
+        public Player()
+        {
+        }
 
         public Player(IClient playerHubContext, string connectionId, string name)
         {

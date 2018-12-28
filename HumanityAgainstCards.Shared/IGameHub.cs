@@ -6,5 +6,6 @@ namespace HumanityAgainstCards.Shared
     {
         Task<string> Create(string name);
         Task<bool> Join(string roomCode, string name);
+        Task Start(string roomCode);
     }
 }

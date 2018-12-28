@@ -4,22 +4,83 @@
 
 <div class="container">
     <h1>@RoomCode</h1>
-    <div class="card-container">
-        <div class="hac-card dark">
-            <p>Enter your name below.</p>
-            <input type="text" bind="@Name" />
-            <div class="hac-card-footer">
-                <button class="btn btn-outline-light" onclick="@CreateOrJoinGame">
-                    @if (IsNewGame)
-                    {
-                        <text>Create</text>
-                    }
-                    else
-                    {
-                        <text>Join</text>
-                    }
-                </button>
+    @if (ShowNameEntry)
+    {
+        <div class="card-container">
+            <div class="hac-card dark">
+                <p>Enter your name below.</p>
+                <input type="text" bind="@Name" />
+                <div class="hac-card-footer">
+                    <button class="btn btn-outline-light" onclick="@CreateOrJoinGame">
+                        @if (IsNewGame)
+                        {
+                            <text>Create</text>
+                        }
+                        else
+                        {
+                            <text>Join</text>
+                        }
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
+    }
+    @if (ShowStart)
+    {
+        <div class="card-container">
+            <div class="hac-card dark">
+                <p>Click start to start the game.</p>
+                <div class="hac-card-footer">
+                    <button class="btn btn-outline-light" onclick="@Start">Start</button>
+                </div>
+            </div>
+        </div>
+    }
+    @if (SelectedQuestion != null)
+    {
+        <div class="card-container">
+            <div class="hac-card dark">
+                <p>@SelectedQuestion.Text</p>
+                <div class="hac-card-footer">
+                    @Timer
+                </div>
+            </div>
+        </div>
+    }
+    @if (Hand != null)
+    {
+        <div class="card-container">
+            @foreach (var card in Hand)
+            {
+                <div class="hac-card">
+                    <p>@card.Text</p>
+                </div>
+            }
+        </div>
+    }
+    @if (Answers != null)
+    {
+        <div class="card-container">
+            @foreach (var answer in Answers)
+            {
+                <div class="hac-card">
+                    @foreach (var card in answer.AnswerCards)
+                    {
+                        <p>@card.Text</p>
+                    }
+                </div>
+            }
+        </div>
+    }
+    @if (WinningCard != null)
+    {
+        <div class="card-container">
+            <div class="hac-card gold">
+                @foreach (var card in WinningCard.AnswerCards)
+                {
+                    <p>@card.Text</p>
+                }
+            </div>
+        </div>
+    }
 </div>

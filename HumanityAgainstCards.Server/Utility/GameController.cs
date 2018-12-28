@@ -10,15 +10,35 @@ namespace HumanityAgainstCards.Server.Utility
 {
     public sealed class GameController
     {
+        private static GameController instance = null;
+        private static readonly object padlock = new object();
+
+        public static GameController Instance {
+            get {
+                lock (padlock)
+                {
+                    if (instance == null)
+                    {
+                        instance = new GameController();
+                    }
+
+                    return instance;
+                }
+            }
+        }
+
         private readonly Random random;
-        private readonly GameHub hub;
+        private GameHub hub;
         public readonly IDictionary<string, Game> Games;
 
-        public GameController(GameHub hub)
+        public GameController()
         {
-            this.hub = hub;
             Games = new Dictionary<string, Game>();
             random = new Random();
+        }
+
+        public void SetHub(GameHub hub) {
+            this.hub = hub;
         }
 
         public string CreateGame()
@@ -56,6 +76,11 @@ namespace HumanityAgainstCards.Server.Utility
             }
 
             return false;
+        }
+
+        public void Start(string roomCode)
+        {
+            Task.Run(() => Games[roomCode].Start());
         }
     }
 }

@@ -7,16 +7,14 @@ namespace HumanityAgainstCards.Server.Hubs
 {
     public class GameHub : Hub<IClient>, IGameHub
     {
-        public GameController gameController;
-
-        public GameHub()
-        {
-            gameController = new GameController(this);
+        public GameHub() {
+            // not ideal
+            GameController.Instance.SetHub(this);
         }
 
         public async Task<string> Create(string name)
         {
-            string roomCode = gameController.CreateGame();
+            string roomCode = GameController.Instance.CreateGame();
 
             await Groups.AddToGroupAsync(Context.ConnectionId, roomCode);
 
@@ -27,7 +25,7 @@ namespace HumanityAgainstCards.Server.Hubs
 
         public async Task<bool> Join(string roomCode, string name)
         {
-            bool joined = await gameController.JoinGame(Context.ConnectionId, roomCode, name);
+            bool joined = await GameController.Instance.JoinGame(Context.ConnectionId, roomCode, name);
 
             if (joined)
             {
@@ -35,6 +33,13 @@ namespace HumanityAgainstCards.Server.Hubs
             }
 
             return joined;
+        }
+
+        public Task Start(string roomCode)
+        {
+            GameController.Instance.Start(roomCode);
+
+            return Task.CompletedTask;
         }
     }
 }

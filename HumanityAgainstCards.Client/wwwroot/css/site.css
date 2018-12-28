@@ -88,6 +88,11 @@ app {
         color: white;
     }
 
+    .hac-card.gold {
+        background-color: gold;
+        color: white;
+    }
+
     .hac-card input[type="text"] {
         background: rgba(0, 0, 0, 0);
         border: none;
