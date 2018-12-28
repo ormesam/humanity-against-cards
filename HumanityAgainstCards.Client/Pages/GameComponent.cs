@@ -20,8 +20,8 @@ namespace HumanityAgainstCards.Client.Pages
         public bool ShowNameEntry { get; set; }
         public bool ShowStart { get; set; }
         public string Name { get; set; }
-        public int Timer { get; set; }
-        public QuestionCard SelectedQuestion;
+        public int Timer = 0;
+        public QuestionCard SelectedQuestion { get; set; }
         public IList<AnswerCard> Hand { get; set; }
         public IList<AnswerCardGroup> Answers { get; set; }
         public AnswerCardGroup WinningCard { get; set; }
@@ -30,7 +30,6 @@ namespace HumanityAgainstCards.Client.Pages
         {
             ShowNameEntry = true;
             ShowStart = false;
-            Timer = 0;
 
             connection = new HubConnectionBuilder().WithUrl("/gamehub").Build();
             connection.On<QuestionCard>(nameof(IClient.ShowQuestion), this.ShowQuestion);
@@ -44,17 +43,19 @@ namespace HumanityAgainstCards.Client.Pages
 
             timer = new Timer(1000);
             timer.Elapsed += Timer_Elapsed;
-            timer.Start();
         }
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             if (Timer <= 0)
             {
+                timer.Stop();
                 return;
             }
 
             Timer--;
+
+            StateHasChanged();
         }
 
         public Task PlayerJoined(string name)
@@ -117,6 +118,10 @@ namespace HumanityAgainstCards.Client.Pages
         public Task SetTimer(int seconds)
         {
             Timer = seconds;
+
+            timer.Stop();
+            timer.Start();
+
             return Task.CompletedTask;
         }
 
