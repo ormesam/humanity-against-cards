@@ -11,11 +11,10 @@ namespace HumanityAgainstCards.Server.Entities
 {
     public class Game
     {
-        private readonly int maxCardsInHand = 5; // change to 10 later
+        private const int maxCardsInHand = 10;
         private readonly string roomCode;
         private GameStatus status;
         private IClient hubContext;
-        private bool skipTimer;
 
         private readonly IList<Player> Players;
         private QuestionCard selectedQuestion;
@@ -49,7 +48,7 @@ namespace HumanityAgainstCards.Server.Entities
                 DealCards();
                 await PickAndShowSelectedQuestion();
                 await ShowHands();
-                await SetTimer(30); // set timer and wait for cards to be picked
+                await SetTimer(30, CheckIfAllAnswersHaveBeenSubmitted); // set timer and wait for cards to be picked
 
                 bool hasSubmittedAnswers = selectedQuestion.SubmittedAnswers.Any();
 
@@ -59,12 +58,34 @@ namespace HumanityAgainstCards.Server.Entities
                 }
 
                 await ShowAnswers();
-                await SetTimer(30); // set timer and wait for votes to be cast
+                await SetTimer(30, CheckIfAllVotesHaveBeenSubmitted); // set timer and wait for votes to be cast
                 await PickAndShowWinner();
                 await SetTimer(8);
             }
 
             status = GameStatus.Complete;
+        }
+
+        private bool CheckIfAllAnswersHaveBeenSubmitted()
+        {
+            int numberOfAnswersSubmitted = selectedQuestion.SubmittedAnswers
+                .Select(i => i.AnswerCards.Count)
+                .Sum();
+
+            int maxAnswersForQuestion = selectedQuestion.NumberOfAnswers * Players.Count;
+
+            return numberOfAnswersSubmitted >= maxAnswersForQuestion;
+        }
+
+        private bool CheckIfAllVotesHaveBeenSubmitted()
+        {
+            int numberOfVotesCast = selectedQuestion.SubmittedAnswers
+                .Select(i => i.Votes)
+                .Sum();
+
+            int maxVotes = Players.Count;
+
+            return numberOfVotesCast >= maxVotes;
         }
 
         private async Task PickAndShowWinner()
@@ -103,13 +124,11 @@ namespace HumanityAgainstCards.Server.Entities
             await hubContext.ShowQuestion(selectedQuestion);
         }
 
-        private async Task SetTimer(int seconds)
+        private async Task SetTimer(int seconds, Func<bool> cancellationCheck = null)
         {
-            skipTimer = false;
-
             while (seconds > 0)
             {
-                if (skipTimer)
+                if (cancellationCheck?.Invoke() ?? false)
                 {
                     break;
                 }
