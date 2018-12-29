@@ -9,6 +9,8 @@ namespace HumanityAgainstCards.Shared.Entities
         public Player Player { get; set; }
         public IList<AnswerCard> AnswerCards { get; set; }
         public int Votes { get; set; }
+        public bool IsVoted { get; set; }
+        public bool IsWinner { get; set; }
 
         public AnswerCardGroup()
         {

@@ -139,7 +139,7 @@ namespace HumanityAgainstCards.Server.Entities
 
         private void DealCards(Player player)
         {
-            var hand = answerDeck.Take(maxCardsInHand - player.Hand.Count);
+            var hand = answerDeck.Take(maxCardsInHand - player.Hand.Count).ToList();
 
             if (hand.Any())
             {

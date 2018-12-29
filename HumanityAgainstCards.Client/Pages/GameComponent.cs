@@ -4,6 +4,7 @@ using HumanityAgainstCards.Shared.Entities;
 using Microsoft.AspNetCore.Blazor.Components;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -26,7 +27,6 @@ namespace HumanityAgainstCards.Client.Pages
         public QuestionCard SelectedQuestion { get; set; }
         public IList<AnswerCard> Hand { get; set; }
         public IList<AnswerCardGroup> Answers { get; set; }
-        public AnswerCardGroup WinningCard { get; set; }
 
         protected override async Task OnInitAsync()
         {
@@ -110,12 +110,14 @@ namespace HumanityAgainstCards.Client.Pages
 
             CanVote = false;
 
+            card.IsVoted = true;
+
             await connection.InvokeAsync(nameof(IGameHub.Vote), RoomCode, card.Id);
         }
 
         public Task ShowQuestion(QuestionCard question)
         {
-            WinningCard = null;
+            Answers = null;
             CanVote = true;
             SubmitCount = 0;
             SelectedQuestion = question;
@@ -149,8 +151,8 @@ namespace HumanityAgainstCards.Client.Pages
 
         public Task ShowWinningCard(AnswerCardGroup winningCard)
         {
-            Answers = null;
-            WinningCard = winningCard;
+            var winner = Answers.Single(i => i.Id == winningCard.Id);
+            winner.IsWinner = true;
             StateHasChanged();
             return Task.CompletedTask;
         }
