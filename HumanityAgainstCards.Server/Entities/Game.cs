@@ -15,6 +15,7 @@ namespace HumanityAgainstCards.Server.Entities
         private readonly string roomCode;
         private GameStatus status;
         private IClient hubContext;
+        private bool skipTimer;
 
         private readonly IList<Player> Players;
         private QuestionCard selectedQuestion;
@@ -104,11 +105,20 @@ namespace HumanityAgainstCards.Server.Entities
 
         private async Task SetTimer(int seconds)
         {
-            int milliseconds = seconds * 1000;
+            skipTimer = false;
 
-            await hubContext.SetTimer(seconds);
+            while (seconds > 0)
+            {
+                if (skipTimer)
+                {
+                    break;
+                }
 
-            await Task.Delay(milliseconds);
+                await hubContext.SetTimer(seconds);
+
+                await Task.Delay(950);
+                seconds--;
+            }
         }
 
         private async Task ShowHands()

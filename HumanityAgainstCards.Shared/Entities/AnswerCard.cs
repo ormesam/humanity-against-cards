@@ -2,7 +2,7 @@
 {
     public class AnswerCard : Card
     {
-        public bool Submitted { get; set; }
+        public bool IsSubmitted { get; set; }
 
         public AnswerCard() : base()
         {

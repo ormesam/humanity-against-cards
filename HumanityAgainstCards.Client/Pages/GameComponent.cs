@@ -12,7 +12,6 @@ namespace HumanityAgainstCards.Client.Pages
     public class GameComponent : BlazorComponent, IClient
     {
         private HubConnection connection;
-        private Timer timer;
 
         [Parameter]
         internal string RoomCode { get; set; }
@@ -43,23 +42,6 @@ namespace HumanityAgainstCards.Client.Pages
             connection.On<IList<Player>>(nameof(IClient.UpdateScoreboard), this.UpdateScoreboard);
             // connection.On(nameof(IClient.WaitForNextRound), this.WaitForNextRound);
             await connection.StartAsync();
-
-            timer = new Timer(1000);
-            timer.Elapsed += Timer_Elapsed;
-            timer.Start();
-        }
-
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            if (Timer <= 0)
-            {
-                timer.Stop();
-                return;
-            }
-
-            Timer--;
-
-            StateHasChanged();
         }
 
         public Task PlayerJoined(string name)
@@ -107,14 +89,14 @@ namespace HumanityAgainstCards.Client.Pages
 
         public async Task Submit(AnswerCard card)
         {
-            if (!CanSubmit)
+            if (!CanSubmit || card.IsSubmitted)
             {
                 return;
             }
 
             SubmitCount++;
 
-            card.Submitted = true;
+            card.IsSubmitted = true;
 
             await connection.InvokeAsync(nameof(IGameHub.Submit), RoomCode, card.Id);
         }
@@ -152,8 +134,7 @@ namespace HumanityAgainstCards.Client.Pages
         {
             Timer = seconds;
 
-            timer.Stop();
-            timer.Start();
+            StateHasChanged();
 
             return Task.CompletedTask;
         }
@@ -169,6 +150,7 @@ namespace HumanityAgainstCards.Client.Pages
         public Task ShowWinningCard(AnswerCardGroup winningCard)
         {
             Answers = null;
+            WinningCard = winningCard;
             StateHasChanged();
             return Task.CompletedTask;
         }

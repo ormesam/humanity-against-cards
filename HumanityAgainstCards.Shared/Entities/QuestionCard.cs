@@ -26,6 +26,7 @@ namespace HumanityAgainstCards.Shared.Entities
             if (answerGroup == null)
             {
                 answerGroup = new AnswerCardGroup(player);
+                SubmittedAnswers.Add(answerGroup);
             }
 
             answerGroup.AnswerCards.Add(card);
