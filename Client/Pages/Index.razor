@@ -1,7 +1,35 @@
-﻿@page "/"
+﻿@using Game;
+@inject NavigationManager navigationManager
+@page "/"
 
-<h1>Hello, world!</h1>
+<h1>SignalR Test</h1>
 
-Welcome to your new app.
+@foreach (var item in messages) {
+    <p>@item</p>
+}
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<button @onclick="start">Start</button>
+<button @onclick="stop">Stop</button>
+
+@code {
+    private List<string> messages = new List<string>();
+    private GameClient gameClient;
+
+    protected override void OnInitialized() {
+        gameClient = new GameClient(navigationManager);
+        gameClient.MessageReceived += (s, e) => {
+            messages.Add(s.ToString());
+            StateHasChanged();
+        };
+
+        base.OnInitialized();
+    }
+
+    private async void start() {
+        await gameClient.StartAsync();
+    }
+
+    private async void stop() {
+        await gameClient.StopAsync();
+    }
+}
