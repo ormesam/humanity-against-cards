@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
 <head>
@@ -6,12 +6,21 @@
     <meta name="viewport" content="width=device-width" />
     <title>Client</title>
     <base href="/" />
+    <link href="css/loading.css" rel="stylesheet" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet" />
 </head>
 
 <body>
-    <app>Loading...</app>
+    <app>
+        <div class="loading-centre">
+            <div class="spinner">
+                <div class="bounce1"></div>
+                <div class="bounce2"></div>
+                <div class="bounce3"></div>
+            </div>
+        </div>
+    </app>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
