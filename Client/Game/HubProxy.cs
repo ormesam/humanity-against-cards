@@ -10,9 +10,12 @@ namespace Client.Game {
     public static class HubProxy {
         public static async Task Call(this HubClientBase hubClient, Expression<Action<IGameHub>> expression) {
             var methodName = GetMethodName(expression);
-            var methodArguments = GetMethodArguments(expression);
+            var methodArguments = GetMethodArguments(expression).ToList();
 
             switch (methodArguments.Count()) {
+                case 0:
+                    await hubClient.HubConnection.InvokeAsync(methodName);
+                    break;
                 case 1:
                     await hubClient.HubConnection.InvokeAsync(methodName, methodArguments[0]);
                     break;
@@ -35,9 +38,11 @@ namespace Client.Game {
 
         public static async Task<T> Call<T>(this HubClientBase hubClient, Expression<Func<IGameHub, T>> expression) {
             var methodName = GetMethodName(expression);
-            var methodArguments = GetMethodArguments(expression);
+            var methodArguments = GetMethodArguments(expression).ToList();
 
             switch (methodArguments.Count()) {
+                case 0:
+                    return await hubClient.HubConnection.InvokeAsync<T>(methodName);
                 case 1:
                     return await hubClient.HubConnection.InvokeAsync<T>(methodName, methodArguments[0]);
                 case 2:
@@ -59,15 +64,16 @@ namespace Client.Game {
             return methodCallExpression.Method.Name;
         }
 
-        private static IList<object> GetMethodArguments(LambdaExpression expression) {
+        private static IEnumerable<object> GetMethodArguments(LambdaExpression expression) {
             var methodCallExpression = (MethodCallExpression)expression.Body;
             var arguments = methodCallExpression.Arguments;
 
-            return arguments
-                .ToList()
-                .Cast<ConstantExpression>()
-                .Select(i => i.Value)
-                .ToList();
+            foreach (var item in arguments) {
+                Expression conversion = Expression.Convert(item, typeof(object));
+                var argumentExpression = Expression.Lambda<Func<object>>(conversion).Compile();
+
+                yield return argumentExpression();
+            }
         }
     }
 }
