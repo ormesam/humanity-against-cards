@@ -36,7 +36,7 @@ namespace Client.Game {
             }
         }
 
-        public static async Task<T> Call<T>(this HubClientBase hubClient, Expression<Func<IGameHub, T>> expression) {
+        public static async Task<T> Call<T>(this HubClientBase hubClient, Expression<Func<IGameHub, Task<T>>> expression) {
             var methodName = GetMethodName(expression);
             var methodArguments = GetMethodArguments(expression).ToList();
 

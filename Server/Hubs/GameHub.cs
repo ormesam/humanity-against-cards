@@ -11,20 +11,25 @@ namespace Server.Hubs {
             this.controller = controller;
         }
 
-        public override Task OnConnectedAsync() {
-            controller.Connected();
+        public async Task<string> CreateGame(string name) {
+            string code = controller.CreateSession();
+            await controller.JoinSession(Context.ConnectionId, name, code);
+            await Groups.AddToGroupAsync(Context.ConnectionId, code);
 
-            return base.OnConnectedAsync();
+            return code;
         }
 
-        public string CreateGame(string name) {
-            return "1234";
+        public async Task<bool> JoinGame(string name, string code) {
+            bool joined = await controller.JoinSession(Context.ConnectionId, name, code);
+
+            if (joined) {
+                await Groups.AddToGroupAsync(Context.ConnectionId, code);
+            }
+
+            return joined;
         }
 
-        public void JoinGame(string name, string code) {
-        }
-
-        public void LeaveGame(string code) {
+        public async Task LeaveGame(string code) {
         }
     }
 }

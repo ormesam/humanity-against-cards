@@ -1,28 +1,29 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Client.Events;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Shared.Interfaces;
 
 namespace Client.Game {
     public class GameClient : HubClientBase {
-        private string code;
+        public string Code { get; private set; }
         public bool IsConnected { get; private set; }
 
-        public event EventHandler MessageReceived;
+        public event PlayerJoinedEventHandler PlayerJoined;
         public event EventHandler ConnectionChanged;
 
         public GameClient(NavigationManager navigationManager) : base(navigationManager) {
         }
 
         protected override void LinkHubConnections() {
-            HubConnection.On<string>(nameof(IGameClient.Test), (message) => MessageReceived?.Invoke(message, null));
+            HubConnection.On<string>(nameof(IGameClient.PlayerJoined), (name) => PlayerJoined?.Invoke(new PlayerJoinedEventArgs(name)));
         }
 
         public async Task CreateGame(string name) {
             await StartAsync();
 
-            code = await this.Call(i => i.CreateGame(name));
+            Code = await this.Call(i => i.CreateGame(name));
 
             IsConnected = true;
             ConnectionChanged.Invoke(null, null);
@@ -31,16 +32,22 @@ namespace Client.Game {
         public async Task JoinGame(string name, string code) {
             await StartAsync();
 
-            await this.Call(i => i.JoinGame(name, code));
+            bool connected = await this.Call(i => i.JoinGame(name, code));
 
-            this.code = code;
+            if (!connected) {
+                await StopAsync();
+
+                return;
+            }
+
+            Code = code;
 
             IsConnected = true;
             ConnectionChanged.Invoke(null, null);
         }
 
         public async Task LeaveGame() {
-            await this.Call(i => i.LeaveGame(code));
+            await this.Call(i => i.LeaveGame(Code));
 
             await StopAsync();
 

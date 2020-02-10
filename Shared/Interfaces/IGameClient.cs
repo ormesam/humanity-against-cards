@@ -2,6 +2,6 @@
 
 namespace Shared.Interfaces {
     public interface IGameClient {
-        Task Test(string message);
+        Task PlayerJoined(string name);
     }
 }
