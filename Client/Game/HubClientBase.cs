@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Client.Game {
     public abstract class HubClientBase : IAsyncDisposable {
-        protected HubConnection HubConnection;
+        public HubConnection HubConnection;
         private NavigationManager navigationManager;
         private bool started;
 

@@ -1,0 +1,73 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR.Client;
+using Shared.Interfaces;
+
+namespace Client.Game {
+    public static class HubProxy {
+        public static async Task Call(this HubClientBase hubClient, Expression<Action<IGameHub>> expression) {
+            var methodName = GetMethodName(expression);
+            var methodArguments = GetMethodArguments(expression);
+
+            switch (methodArguments.Count()) {
+                case 1:
+                    await hubClient.HubConnection.InvokeAsync(methodName, methodArguments[0]);
+                    break;
+                case 2:
+                    await hubClient.HubConnection.InvokeAsync(methodName, methodArguments[0], methodArguments[1]);
+                    break;
+                case 3:
+                    await hubClient.HubConnection.InvokeAsync(methodName, methodArguments[0], methodArguments[1], methodArguments[2]);
+                    break;
+                case 4:
+                    await hubClient.HubConnection.InvokeAsync(methodName, methodArguments[0], methodArguments[1], methodArguments[2], methodArguments[3]);
+                    break;
+                case 5:
+                    await hubClient.HubConnection.InvokeAsync(methodName, methodArguments[0], methodArguments[1], methodArguments[2], methodArguments[3], methodArguments[4]);
+                    break;
+                default:
+                    throw new ArgumentException("Too many arguments");
+            }
+        }
+
+        public static async Task<T> Call<T>(this HubClientBase hubClient, Expression<Func<IGameHub, T>> expression) {
+            var methodName = GetMethodName(expression);
+            var methodArguments = GetMethodArguments(expression);
+
+            switch (methodArguments.Count()) {
+                case 1:
+                    return await hubClient.HubConnection.InvokeAsync<T>(methodName, methodArguments[0]);
+                case 2:
+                    return await hubClient.HubConnection.InvokeAsync<T>(methodName, methodArguments[0], methodArguments[1]);
+                case 3:
+                    return await hubClient.HubConnection.InvokeAsync<T>(methodName, methodArguments[0], methodArguments[1], methodArguments[2]);
+                case 4:
+                    return await hubClient.HubConnection.InvokeAsync<T>(methodName, methodArguments[0], methodArguments[1], methodArguments[2], methodArguments[3]);
+                case 5:
+                    return await hubClient.HubConnection.InvokeAsync<T>(methodName, methodArguments[0], methodArguments[1], methodArguments[2], methodArguments[3], methodArguments[4]);
+                default:
+                    throw new ArgumentException("Too many arguments");
+            }
+        }
+
+        private static string GetMethodName(LambdaExpression expression) {
+            var methodCallExpression = (MethodCallExpression)expression.Body;
+
+            return methodCallExpression.Method.Name;
+        }
+
+        private static IList<object> GetMethodArguments(LambdaExpression expression) {
+            var methodCallExpression = (MethodCallExpression)expression.Body;
+            var arguments = methodCallExpression.Arguments;
+
+            return arguments
+                .ToList()
+                .Cast<ConstantExpression>()
+                .Select(i => i.Value)
+                .ToList();
+        }
+    }
+}

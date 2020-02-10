@@ -2,34 +2,64 @@
 @inject NavigationManager navigationManager
 @page "/"
 
-<h1>SignalR Test</h1>
+@if (!gameClient.IsConnected) {
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-6 offset-md-3">
+                <h1>Humanity Against Cards</h1>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" @bind-value="name">
+                </div>
+                <div class="form-group">
+                    <label for="code">Code</label>
+                    <input type="text" class="form-control" id="code" @bind-value="code">
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-success btn-block" @onclick="StartGame">Create</button>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-primary btn-block" @onclick="JoinGame">Join</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-@foreach (var item in messages) {
-    <p>@item</p>
+} else {
+    <button class="btn btn-primary" @onclick="LeaveGame">Leave</button>
 }
 
-<button @onclick="start">Start</button>
-<button @onclick="stop">Stop</button>
-
 @code {
-    private List<string> messages = new List<string>();
+    private string name;
+    private string code;
     private GameClient gameClient;
 
     protected override void OnInitialized() {
         gameClient = new GameClient(navigationManager);
         gameClient.MessageReceived += (s, e) => {
-            messages.Add(s.ToString());
+            StateHasChanged();
+        };
+        gameClient.ConnectionChanged += (s, e) => {
             StateHasChanged();
         };
 
         base.OnInitialized();
     }
 
-    private async void start() {
-        await gameClient.StartAsync();
+    private async void StartGame() {
+        await gameClient.CreateGame(name);
+        StateHasChanged();
     }
 
-    private async void stop() {
-        await gameClient.StopAsync();
+    private async void JoinGame() {
+        await gameClient.JoinGame(name, code);
+        StateHasChanged();
+    }
+
+    private async void LeaveGame() {
+        await gameClient.LeaveGame();
+        StateHasChanged();
     }
 }

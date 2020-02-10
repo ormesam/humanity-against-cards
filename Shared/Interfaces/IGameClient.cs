@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 
 namespace Shared.Interfaces {
-    public interface IGameHubClient {
+    public interface IGameClient {
         Task Test(string message);
     }
 }

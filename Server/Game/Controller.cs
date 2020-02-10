@@ -4,9 +4,9 @@ using Shared.Interfaces;
 
 namespace Server.Game {
     public class Controller {
-        private readonly IHubContext<GameHub, IGameHubClient> gameHub;
+        private readonly IHubContext<GameHub, IGameClient> gameHub;
 
-        public Controller(IHubContext<GameHub, IGameHubClient> gameHub) {
+        public Controller(IHubContext<GameHub, IGameClient> gameHub) {
             this.gameHub = gameHub;
         }
 
