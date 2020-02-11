@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Server.Game;
+using Shared.Dtos;
 using Shared.Interfaces;
 
 namespace Server.Hubs {
@@ -19,14 +20,12 @@ namespace Server.Hubs {
             return code;
         }
 
-        public async Task<bool> JoinGame(string name, string code) {
-            bool joined = await controller.JoinSession(Context.ConnectionId, name, code);
+        public async Task<GameState> JoinGame(string name, string code) {
+            GameState gameState = await controller.JoinSession(Context.ConnectionId, name, code);
 
-            if (joined) {
-                await Groups.AddToGroupAsync(Context.ConnectionId, code);
-            }
+            await Groups.AddToGroupAsync(Context.ConnectionId, code);
 
-            return joined;
+            return gameState;
         }
 
         public async Task LeaveGame(string code) {

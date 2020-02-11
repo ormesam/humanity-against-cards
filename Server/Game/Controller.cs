@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Server.Hubs;
+using Shared.Dtos;
+using Shared.Exceptions;
 using Shared.Interfaces;
 
 namespace Server.Game {
@@ -41,14 +43,12 @@ namespace Server.Game {
             return roomCode;
         }
 
-        public async Task<bool> JoinSession(string connectionId, string name, string code) {
+        public async Task<GameState> JoinSession(string connectionId, string name, string code) {
             if (!sessions.ContainsKey(code)) {
-                return false;
+                throw new GameNotFoundException();
             }
 
-            await sessions[code].Join(gameHub, connectionId, name);
-
-            return true;
+            return await sessions[code].Join(gameHub, connectionId, name);
         }
     }
 }

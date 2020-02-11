@@ -1,23 +1,54 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Client.Events;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
+using Shared.Dtos;
+using Shared.Exceptions;
 using Shared.Interfaces;
 
 namespace Client.Game {
     public class GameClient : HubClientBase {
-        public string Code { get; private set; }
-        public bool IsConnected { get; private set; }
+        private GameState state;
+        private string code;
+        private bool isConnected;
 
-        public event PlayerJoinedEventHandler PlayerJoined;
-        public event EventHandler ConnectionChanged;
+        public event EventHandler UpdateUi;
+
+        public GameState State {
+            get => state;
+            set {
+                if (state != value) {
+                    state = value;
+                    UpdateUi?.Invoke(null, null);
+                }
+            }
+        }
+
+        public string Code {
+            get => code;
+            private set {
+                if (code != value) {
+                    code = value;
+                    UpdateUi?.Invoke(null, null);
+                }
+            }
+        }
+
+        public bool IsConnected {
+            get => isConnected;
+            private set {
+                if (isConnected != value) {
+                    isConnected = value;
+                    UpdateUi?.Invoke(null, null);
+                }
+            }
+        }
 
         public GameClient(NavigationManager navigationManager) : base(navigationManager) {
         }
 
         protected override void LinkHubConnections() {
-            HubConnection.On<string>(nameof(IGameClient.PlayerJoined), (name) => PlayerJoined?.Invoke(new PlayerJoinedEventArgs(name)));
+            HubConnection.On<string>(nameof(IGameClient.PlayerJoined), (name) => UpdateUi?.Invoke(null, null));
         }
 
         public async Task CreateGame(string name) {
@@ -26,24 +57,25 @@ namespace Client.Game {
             Code = await this.Call(i => i.CreateGame(name));
 
             IsConnected = true;
-            ConnectionChanged.Invoke(null, null);
         }
 
         public async Task JoinGame(string name, string code) {
             await StartAsync();
 
-            bool connected = await this.Call(i => i.JoinGame(name, code));
+            try {
 
-            if (!connected) {
+            } catch (GameNotFoundException) {
                 await StopAsync();
 
                 return;
             }
 
+            GameState state = await this.Call(i => i.JoinGame(name, code));
+
+            State = state;
             Code = code;
 
             IsConnected = true;
-            ConnectionChanged.Invoke(null, null);
         }
 
         public async Task LeaveGame() {
@@ -52,7 +84,6 @@ namespace Client.Game {
             await StopAsync();
 
             IsConnected = false;
-            ConnectionChanged.Invoke(null, null);
         }
     }
 }

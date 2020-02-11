@@ -44,12 +44,7 @@
     protected override void OnInitialized() {
         gameClient = new GameClient(navigationManager);
 
-        gameClient.PlayerJoined += (player) => {
-            players.Add(player.Name);
-            StateHasChanged();
-        };
-
-        gameClient.ConnectionChanged += (s, e) => {
+        gameClient.UpdateUi += (s, e) => {
             StateHasChanged();
         };
 
@@ -58,16 +53,13 @@
 
     private async void StartGame() {
         await gameClient.CreateGame(name);
-        StateHasChanged();
     }
 
     private async void JoinGame() {
         await gameClient.JoinGame(name, roomCode);
-        StateHasChanged();
     }
 
     private async void LeaveGame() {
         await gameClient.LeaveGame();
-        StateHasChanged();
     }
 }
