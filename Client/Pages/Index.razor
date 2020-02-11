@@ -30,21 +30,17 @@
 } else {
     <button class="btn btn-primary" @onclick="LeaveGame">Leave</button>
     <p>Code: @gameClient.Code</p>
-    @foreach (var player in players) {
-        <p>@player</p>
-    }
 }
 
 @code {
     private string name;
     private string roomCode;
     private GameClient gameClient;
-    private IList<string> players = new List<string>();
 
     protected override void OnInitialized() {
         gameClient = new GameClient(navigationManager);
 
-        gameClient.UpdateUi += (s, e) => {
+        gameClient.UIUpdated += () => {
             StateHasChanged();
         };
 

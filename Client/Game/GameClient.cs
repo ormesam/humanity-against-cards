@@ -1,5 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Client.Events;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Shared.Dtos;
@@ -12,14 +12,14 @@ namespace Client.Game {
         private string code;
         private bool isConnected;
 
-        public event EventHandler UpdateUi;
+        public event UIUpdatedEventHandler UIUpdated;
 
         public GameState State {
             get => state;
             set {
                 if (state != value) {
                     state = value;
-                    UpdateUi?.Invoke(null, null);
+                    UIUpdated?.Invoke();
                 }
             }
         }
@@ -29,7 +29,7 @@ namespace Client.Game {
             private set {
                 if (code != value) {
                     code = value;
-                    UpdateUi?.Invoke(null, null);
+                    UIUpdated?.Invoke();
                 }
             }
         }
@@ -39,7 +39,7 @@ namespace Client.Game {
             private set {
                 if (isConnected != value) {
                     isConnected = value;
-                    UpdateUi?.Invoke(null, null);
+                    UIUpdated?.Invoke();
                 }
             }
         }
@@ -48,7 +48,7 @@ namespace Client.Game {
         }
 
         protected override void LinkHubConnections() {
-            HubConnection.On<string>(nameof(IGameClient.PlayerJoined), (name) => UpdateUi?.Invoke(null, null));
+            HubConnection.On<string>(nameof(IGameClient.PlayerJoined), (name) => UIUpdated?.Invoke());
         }
 
         public async Task CreateGame(string name) {
