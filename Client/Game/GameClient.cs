@@ -19,7 +19,7 @@ namespace Client.Game {
             set {
                 if (state != value) {
                     state = value;
-                    UIUpdated?.Invoke();
+                    UpdateUI();
                 }
             }
         }
@@ -29,7 +29,7 @@ namespace Client.Game {
             private set {
                 if (code != value) {
                     code = value;
-                    UIUpdated?.Invoke();
+                    UpdateUI();
                 }
             }
         }
@@ -39,7 +39,7 @@ namespace Client.Game {
             private set {
                 if (isConnected != value) {
                     isConnected = value;
-                    UIUpdated?.Invoke();
+                    UpdateUI();
                 }
             }
         }
@@ -48,7 +48,7 @@ namespace Client.Game {
         }
 
         protected override void LinkHubConnections() {
-            HubConnection.On<string>(nameof(IGameClient.PlayerJoined), (name) => UIUpdated?.Invoke());
+            HubConnection.On<string>(nameof(IGameClient.PlayerJoined), (name) => UpdateUI());
         }
 
         public async Task CreateGame(string name) {
@@ -84,6 +84,10 @@ namespace Client.Game {
             await StopAsync();
 
             IsConnected = false;
+        }
+
+        private void UpdateUI() {
+            UIUpdated?.Invoke();
         }
     }
 }
