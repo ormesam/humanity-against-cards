@@ -2,9 +2,9 @@
 using Client.Events;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
-using Shared.Dtos;
-using Shared.Exceptions;
-using Shared.Interfaces;
+using Common.Dtos;
+using Common.Exceptions;
+using Common.Interfaces;
 
 namespace Client.Game {
     public class GameClient : HubClientBase {

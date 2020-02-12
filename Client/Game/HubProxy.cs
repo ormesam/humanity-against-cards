@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
-using Shared.Interfaces;
+using Common.Interfaces;
 
 namespace Client.Game {
     public static class HubProxy {

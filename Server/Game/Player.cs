@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Shared.Dtos;
+using Common.Dtos;
 
 namespace Server.Game {
     public class Player {

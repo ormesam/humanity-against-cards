@@ -1,4 +1,4 @@
-﻿namespace Shared.Dtos {
+﻿namespace Common.Dtos {
     public class QuestionCard : Card {
         public string Text { get; set; }
         public int NoOfAnswers { get; set; }

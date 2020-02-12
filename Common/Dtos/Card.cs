@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Shared.Dtos {
+namespace Common.Dtos {
     public class Card {
         public Guid Id { get; }
 

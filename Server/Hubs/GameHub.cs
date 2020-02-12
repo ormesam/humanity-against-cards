@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Server.Game;
-using Shared.Dtos;
-using Shared.Interfaces;
+using Common.Dtos;
+using Common.Interfaces;
 
 namespace Server.Hubs {
     public class GameHub : Hub<IGameClient>, IGameHub {

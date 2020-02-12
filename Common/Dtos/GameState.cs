@@ -1,4 +1,4 @@
-﻿namespace Shared.Dtos {
+﻿namespace Common.Dtos {
     public enum GameState {
         NotStarted,
         Running,

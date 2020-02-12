@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Shared.Dtos;
+using Common.Dtos;
 
-namespace Shared.Interfaces {
+namespace Common.Interfaces {
     public interface IGameHub {
         Task<string> CreateGame(string name);
         Task<GameState> JoinGame(string name, string code);

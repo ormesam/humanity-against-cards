@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Server.Hubs;
-using Shared.Dtos;
-using Shared.Interfaces;
+using Common.Dtos;
+using Common.Interfaces;
 
 namespace Server.Game {
     public class Session {
@@ -101,7 +101,7 @@ namespace Server.Game {
             CurrentQuestion = QuestionPile.Dequeue();
         }
 
-        public async Task<GameState> Join(IHubContext<GameHub, IGameClient> gameHub, string connectionId, string name) {
+        public async Task<GameState> Join(string connectionId, string name) {
             Players.Add(new Player(connectionId, name));
 
             await gameHub.Clients.Group(Code).PlayerJoined(name);

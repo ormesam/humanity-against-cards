@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Server.Hubs;
-using Shared.Dtos;
-using Shared.Exceptions;
-using Shared.Interfaces;
+using Common.Dtos;
+using Common.Exceptions;
+using Common.Interfaces;
 
 namespace Server.Game {
     public class Controller {
@@ -48,7 +48,7 @@ namespace Server.Game {
                 throw new GameNotFoundException();
             }
 
-            return await sessions[code].Join(gameHub, connectionId, name);
+            return await sessions[code].Join(connectionId, name);
         }
     }
 }

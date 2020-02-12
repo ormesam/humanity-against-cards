@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Shared.Dtos;
+using Common.Dtos;
 
-namespace Shared.Interfaces {
+namespace Common.Interfaces {
     public interface IGameClient {
         Task PlayerJoined(string name);
         Task DealCard(AnswerCard card);

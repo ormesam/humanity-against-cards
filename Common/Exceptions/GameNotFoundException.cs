@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Shared.Exceptions {
+namespace Common.Exceptions {
     public class GameNotFoundException : Exception {
     }
 }
