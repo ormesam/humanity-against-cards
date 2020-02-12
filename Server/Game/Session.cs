@@ -31,17 +31,25 @@ namespace Server.Game {
         }
 
         public async Task Start() {
-            while (Players.Any()) {
+            while (Players.Any() && QuestionPile.Any()) {
                 SetUpRound();
                 await DealCards();
                 await ShowQuestion();
                 // Wait for users to pick their answers
-                await Sleep(30, () => false);
+                await Sleep(30, CheckIfMaxAnswersHaveBeenSubmitted);
                 await ShowAnswers();
                 // Wait for users to cast their votes
-                await Sleep(30, () => false);
+                await Sleep(30, CheckIfMaxVotesHaveBeenCast);
                 await CalculateAndDisplayWinningCard();
             }
+        }
+
+        private bool CheckIfMaxVotesHaveBeenCast() {
+            return SubmittedAnswers.Sum(i => i.Votes) == Players.Count;
+        }
+
+        private bool CheckIfMaxAnswersHaveBeenSubmitted() {
+            return SubmittedAnswers.Count == CurrentQuestion.NoOfAnswers * Players.Count;
         }
 
         private async Task CalculateAndDisplayWinningCard() {
