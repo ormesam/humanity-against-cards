@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Server.Game {
+namespace Shared.Dtos {
     public class Card {
         public Guid Id { get; }
 

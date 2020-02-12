@@ -21,7 +21,7 @@ namespace Server.Game {
         }
 
         public string CreateSession() {
-            Session session = new Session(GenerateCode());
+            Session session = new Session(gameHub, GenerateCode());
 
             sessions.Add(session.Code, session);
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
@@ -8,27 +9,88 @@ using Shared.Interfaces;
 
 namespace Server.Game {
     public class Session {
+        private readonly int maxCardsInHand = 10;
+        private readonly IHubContext<GameHub, IGameClient> gameHub;
+
         public string Code { get; }
         public GameState GameState { get; private set; }
         public IList<Player> Players { get; set; }
         public Queue<AnswerCard> AnswerPile { get; set; }
+        public Queue<QuestionCard> QuestionPile { get; set; }
+        public QuestionCard CurrentQuestion { get; set; }
+        public IList<AnswerCard> SubmittedAnswers { get; set; }
 
-        public Session(string code) {
+        public Session(IHubContext<GameHub, IGameClient> gameHub, string code) {
+            this.gameHub = gameHub;
             Code = code;
             GameState = GameState.NotStarted;
             Players = new List<Player>();
             AnswerPile = new Queue<AnswerCard>();
+            QuestionPile = new Queue<QuestionCard>();
+            SubmittedAnswers = new List<AnswerCard>();
         }
 
         public async Task Start() {
             while (Players.Any()) {
-                // Deal Cards
-                // Show Question
-                // Wait 30 Seconds with check
-                // Show Answers
-                // Wait for users to pick answers (30 seconds with check)
-                // Display results
+                SetUpRound();
+                await DealCards();
+                await ShowQuestion();
+                // Wait for users to pick their answers
+                await Sleep(30, () => false);
+                await ShowAnswers();
+                // Wait for users to cast their votes
+                await Sleep(30, () => false);
+                await CalculateAndDisplayWinningCard();
             }
+        }
+
+        private async Task CalculateAndDisplayWinningCard() {
+            if (!SubmittedAnswers.Any()) {
+                return;
+            }
+
+            var topCard = SubmittedAnswers
+                .OrderByDescending(i => i.Votes)
+                .First();
+
+            await gameHub.Clients.Group(Code).ShowWinningCard(topCard);
+        }
+
+        // Must be a more sophisticated way of doing this
+        private async Task Sleep(int seconds, Func<bool> cancellationCheck) {
+            for (int i = 0; i < seconds; i++) {
+                await gameHub.Clients.Group(Code).UpdateTimer(seconds - i);
+
+                if (cancellationCheck()) {
+                    return;
+                }
+
+                await Task.Delay(1000);
+            }
+        }
+
+        private async Task ShowAnswers() {
+            await gameHub.Clients.Group(Code).ShowAnswers(SubmittedAnswers);
+        }
+
+        private async Task ShowQuestion() {
+            await gameHub.Clients.Group(Code).ShowQuestion(CurrentQuestion);
+        }
+
+        private async Task DealCards() {
+            foreach (var player in Players) {
+                if (player.Hand.Count < maxCardsInHand) {
+                    var card = AnswerPile.Dequeue();
+
+                    player.Hand.Add(card);
+                    await gameHub.Clients.Client(player.ConnectionId).DealCard(card);
+                }
+            }
+        }
+
+        private void SetUpRound() {
+            SubmittedAnswers.Clear();
+            CurrentQuestion = QuestionPile.Dequeue();
         }
 
         public async Task<GameState> Join(IHubContext<GameHub, IGameClient> gameHub, string connectionId, string name) {
