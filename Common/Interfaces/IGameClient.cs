@@ -7,8 +7,8 @@ namespace Common.Interfaces {
         Task PlayerJoined(string name);
         Task DealCard(AnswerCard card);
         Task ShowQuestion(QuestionCard question);
-        Task ShowAnswers(IList<AnswerCard> submittedAnswers);
+        Task ShowAnswers(IList<SubmittedCard> submittedAnswers);
         Task UpdateTimer(int seconds);
-        Task ShowWinningCard(AnswerCard topCard);
+        Task ShowWinningCard(SubmittedCard topCard);
     }
 }

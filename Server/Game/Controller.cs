@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
-using Server.Hubs;
 using Common.Dtos;
 using Common.Exceptions;
 using Common.Interfaces;
+using Microsoft.AspNetCore.SignalR;
+using Server.Hubs;
 
 namespace Server.Game {
     public class Controller {
@@ -49,6 +49,26 @@ namespace Server.Game {
             }
 
             return await sessions[code].Join(connectionId, name);
+        }
+
+        public Task SubmitCard(string code, string connectionId, Guid answerCardId) {
+            if (!sessions.ContainsKey(code)) {
+                throw new GameNotFoundException();
+            }
+
+            sessions[code].SubmitCard(connectionId, answerCardId);
+
+            return Task.CompletedTask;
+        }
+
+        public Task Vote(string code, string connectionId, Guid submittedCardId) {
+            if (!sessions.ContainsKey(code)) {
+                throw new GameNotFoundException();
+            }
+
+            sessions[code].Vote(connectionId, submittedCardId);
+
+            return Task.CompletedTask;
         }
     }
 }

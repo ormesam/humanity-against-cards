@@ -5,6 +5,7 @@ namespace Server.Game {
     public class Player {
         public string Name { get; set; }
         public string ConnectionId { get; set; }
+        public bool Voted { get; set; }
         public IList<AnswerCard> Hand { get; set; }
         public IList<QuestionCard> CardsWon { get; set; }
 
@@ -13,6 +14,7 @@ namespace Server.Game {
             Name = name;
             CardsWon = new List<QuestionCard>();
             Hand = new List<AnswerCard>();
+            Voted = false;
         }
     }
 }
