@@ -29,15 +29,16 @@ namespace Server.Hubs {
             return gameState;
         }
 
-        public async Task SubmitCard(string code, string connectionId, Guid answerCardId) {
-            await controller.SubmitCard(code, connectionId, answerCardId);
+        public async Task StartGame(string code) {
+            // Start game using something like hangfire?
         }
 
-        public async Task Vote(string code, string connectionId, Guid submittedCardId) {
-            await controller.Vote(code, connectionId, submittedCardId);
+        public async Task SubmitCard(string code, Guid answerCardId) {
+            await controller.SubmitCard(code, Context.ConnectionId, answerCardId);
         }
 
-        public async Task LeaveGame(string code) {
+        public async Task Vote(string code, Guid submittedCardId) {
+            await controller.Vote(code, Context.ConnectionId, submittedCardId);
         }
     }
 }

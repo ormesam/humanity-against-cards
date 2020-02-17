@@ -6,8 +6,8 @@ namespace Common.Interfaces {
     public interface IGameHub {
         Task<string> CreateGame(string name);
         Task<GameState> JoinGame(string name, string code);
-        Task Vote(string code, string connectionId, Guid submittedCardId);
-        Task SubmitCard(string code, string connectionId, Guid answerCardId);
-        Task LeaveGame(string code);
+        Task Vote(string code, Guid submittedCardId);
+        Task SubmitCard(string code, Guid answerCardId);
+        Task StartGame(string code);
     }
 }

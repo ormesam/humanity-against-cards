@@ -5,7 +5,7 @@ using Common.Dtos;
 namespace Common.Interfaces {
     public interface IGameClient {
         Task PlayerJoined(string name);
-        Task DealCard(AnswerCard card);
+        Task ShowHand(IList<AnswerCard> hand);
         Task ShowQuestion(QuestionCard question);
         Task ShowAnswers(IList<SubmittedCard> submittedAnswers);
         Task UpdateTimer(int seconds);

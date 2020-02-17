@@ -92,9 +92,9 @@ namespace Server.Game {
                     var card = AnswerPile.Dequeue();
 
                     player.Hand.Add(card);
-
-                    await gameHub.Clients.Client(player.ConnectionId).DealCard(card);
                 }
+
+                await gameHub.Clients.Client(player.ConnectionId).ShowHand(player.Hand);
             }
         }
 

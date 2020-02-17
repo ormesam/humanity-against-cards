@@ -1,16 +1,18 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Client.Events;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.SignalR.Client;
 using Common.Dtos;
 using Common.Exceptions;
 using Common.Interfaces;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Client.Game {
     public class GameClient : HubClientBase {
         private GameState state;
         private string code;
         private bool isConnected;
+        private IList<AnswerCard> hand;
 
         public event UIUpdatedEventHandler UIUpdated;
 
@@ -44,11 +46,22 @@ namespace Client.Game {
             }
         }
 
+        public IList<AnswerCard> Hand {
+            get => hand;
+            private set {
+                if (hand != value) {
+                    hand = value;
+                    UpdateUI();
+                }
+            }
+        }
+
         public GameClient(NavigationManager navigationManager) : base(navigationManager) {
         }
 
         protected override void LinkHubConnections() {
             HubConnection.On<string>(nameof(IGameClient.PlayerJoined), (name) => UpdateUI());
+            HubConnection.On<IList<AnswerCard>>(nameof(IGameClient.ShowHand), (hand) => { Hand = hand; });
         }
 
         public async Task CreateGame(string name) {
@@ -79,11 +92,13 @@ namespace Client.Game {
         }
 
         public async Task LeaveGame() {
-            await this.Call(i => i.LeaveGame(Code));
-
             await StopAsync();
 
             IsConnected = false;
+        }
+
+        public async Task StartGame() {
+            await this.Call(i => i.StartGame(Code));
         }
 
         private void UpdateUI() {
