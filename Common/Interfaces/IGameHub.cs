@@ -8,6 +8,6 @@ namespace Common.Interfaces {
         Task<GameState> JoinGame(string name, string code);
         Task Vote(string code, Guid submittedCardId);
         Task SubmitCard(string code, Guid answerCardId);
-        Task StartGame(string code);
+        void StartGame(string code);
     }
 }

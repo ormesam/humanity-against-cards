@@ -57,6 +57,7 @@ namespace Client.Game {
         }
 
         public GameClient(NavigationManager navigationManager) : base(navigationManager) {
+            hand = new List<AnswerCard>();
         }
 
         protected override void LinkHubConnections() {

@@ -29,8 +29,8 @@ namespace Server.Hubs {
             return gameState;
         }
 
-        public async Task StartGame(string code) {
-            // Start game using something like hangfire?
+        public void StartGame(string code) {
+            controller.StartGame(code);
         }
 
         public async Task SubmitCard(string code, Guid answerCardId) {

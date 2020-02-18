@@ -1,3 +1,5 @@
+using Hangfire;
+using Hangfire.MemoryStorage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +27,10 @@ namespace Server {
                 });
             });
 
+            services.AddHangfire(config => {
+                config.UseMemoryStorage();
+            });
+
             services.AddControllers();
 
             services.AddSignalR();
@@ -42,6 +48,8 @@ namespace Server {
             app.UseCors(AllowSpecificOrigins);
 
             app.UseAuthorization();
+
+            app.UseHangfireServer();
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllers();
