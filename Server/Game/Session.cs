@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,7 +18,7 @@ namespace Server.Game {
         public Queue<AnswerCard> AnswerPile { get; set; }
         public Queue<QuestionCard> QuestionPile { get; set; }
         public QuestionCard CurrentQuestion { get; set; }
-        public ConcurrentDictionary<string, SubmittedCard> SubmittedAnswers { get; set; }
+        public IList<SubmittedCard> SubmittedAnswers { get; set; }
 
         public Session(IHubContext<GameHub, IGameClient> gameHub, string code) {
             this.gameHub = gameHub;
@@ -28,7 +27,7 @@ namespace Server.Game {
             Players = new List<Player>();
             AnswerPile = new Queue<AnswerCard>();
             QuestionPile = new Queue<QuestionCard>();
-            SubmittedAnswers = new ConcurrentDictionary<string, SubmittedCard>();
+            SubmittedAnswers = new List<SubmittedCard>();
         }
 
         public async Task Start() {
@@ -46,6 +45,7 @@ namespace Server.Game {
                 // Wait for users to cast their votes
                 await Sleep(30, CheckIfMaxVotesHaveBeenCast);
                 await CalculateAndDisplayWinningCard();
+                await Sleep(8, () => false);
             }
 
             await ChangeGameState(GameState.Ended);
@@ -73,7 +73,7 @@ namespace Server.Game {
         }
 
         private bool CheckIfMaxAnswersHaveBeenSubmitted() {
-            return SubmittedAnswers.SelectMany(i => i.Value.AnswerCards).Count() == CurrentQuestion.NoOfAnswers * Players.Count;
+            return SubmittedAnswers.Count == Players.Count;
         }
 
         private async Task CalculateAndDisplayWinningCard() {
@@ -82,10 +82,10 @@ namespace Server.Game {
             }
 
             var topCard = SubmittedAnswers
-                .OrderByDescending(i => i.Value.Votes)
+                .OrderByDescending(i => i.Votes)
                 .First();
 
-            await gameHub.Clients.Group(Code).ShowWinningCard(topCard.Value);
+            await gameHub.Clients.Group(Code).ShowWinningCard(topCard);
         }
 
         // Must be a more sophisticated way of doing this
@@ -102,7 +102,7 @@ namespace Server.Game {
         }
 
         private async Task ShowAnswers() {
-            await gameHub.Clients.Group(Code).ShowAnswers(SubmittedAnswers.Select(i => i.Value).ToList());
+            await gameHub.Clients.Group(Code).ShowAnswers(SubmittedAnswers);
         }
 
         private async Task ShowQuestion() {
@@ -138,22 +138,20 @@ namespace Server.Game {
             return GameState;
         }
 
-        public void SubmitCard(string connectionId, Guid answerCardId) {
-            var player = Players.Single(i => i.ConnectionId == connectionId);
-
-            int numberOfCardsSubmitted = SubmittedAnswers[connectionId].AnswerCards.Count;
-
-            if (numberOfCardsSubmitted < CurrentQuestion.NoOfAnswers) {
-                var answerCard = player.Hand.Single(i => i.Id == answerCardId);
-
-                if (!SubmittedAnswers.ContainsKey(connectionId)) {
-                    SubmittedAnswers.TryAdd(connectionId, new SubmittedCard {
-                        PlayerId = connectionId,
-                    });
-                }
-
-                SubmittedAnswers[connectionId].AnswerCards.Add(answerCard);
+        public void SubmitCards(string connectionId, IList<Guid> answerCardIds) {
+            if (SubmittedAnswers.Any(i => i.PlayerId == connectionId)) {
+                return;
             }
+
+            var player = Players.Single(i => i.ConnectionId == connectionId);
+            var answerCards = player.Hand
+                .Where(i => answerCardIds.Contains(i.Id))
+                .ToList();
+
+            SubmittedAnswers.Add(new SubmittedCard {
+                PlayerId = connectionId,
+                AnswerCards = answerCards,
+            });
         }
 
         public void Vote(string connectionId, Guid submittedCardId) {
@@ -165,7 +163,7 @@ namespace Server.Game {
 
             player.Voted = true;
 
-            var card = SubmittedAnswers.Single(i => i.Value.Id == submittedCardId).Value;
+            var card = SubmittedAnswers.Single(i => i.Id == submittedCardId);
             card.Votes++;
         }
     }

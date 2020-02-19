@@ -39,7 +39,6 @@ namespace Server {
                 });
 
             services.AddSingleton<Controller>();
-            //services.AddSingleton<GameHub>(); // I think this is the correct way to go, needs some changing of code though
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {

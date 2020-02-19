@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -46,9 +47,17 @@ namespace Client.Game {
 
         public void Register<T>(string methodName, Action<T> handler) {
             HubConnection.On<object>(methodName, (obj) => {
-                var parsed = JsonConvert.DeserializeObject<T>(obj.ToString());
+                Debug.WriteLine(methodName + " called");
 
-                handler(parsed);
+                try {
+                    Debug.WriteLine(obj.ToString());
+                    var parsed = JsonConvert.DeserializeObject<T>(obj.ToString());
+                    Debug.WriteLine(parsed);
+
+                    handler(parsed);
+                } catch (Exception ex) {
+                    Debug.WriteLine(ex);
+                }
             });
         }
 

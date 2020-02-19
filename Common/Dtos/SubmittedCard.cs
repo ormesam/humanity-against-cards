@@ -5,5 +5,6 @@ namespace Common.Dtos {
         public string PlayerId { get; set; }
         public IList<AnswerCard> AnswerCards { get; set; }
         public int Votes { get; set; }
+        public bool IsWinningCard { get; set; }
     }
 }

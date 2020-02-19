@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Common.Dtos;
 using Common.Interfaces;
@@ -33,8 +34,8 @@ namespace Server.Hubs {
             controller.StartGame(code);
         }
 
-        public async Task SubmitCard(string code, Guid answerCardId) {
-            await controller.SubmitCard(code, Context.ConnectionId, answerCardId);
+        public async Task SubmitCards(string code, IList<Guid> answerCardIds) {
+            await controller.SubmitCards(code, Context.ConnectionId, answerCardIds);
         }
 
         public async Task Vote(string code, Guid submittedCardId) {

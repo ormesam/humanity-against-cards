@@ -57,12 +57,12 @@ namespace Server.Game {
             Task.Run(() => session.Start());
         }
 
-        public Task SubmitCard(string code, string connectionId, Guid answerCardId) {
+        public Task SubmitCards(string code, string connectionId, IList<Guid> answerCardIds) {
             if (!sessions.ContainsKey(code)) {
                 throw new GameNotFoundException();
             }
 
-            sessions[code].SubmitCard(connectionId, answerCardId);
+            sessions[code].SubmitCards(connectionId, answerCardIds);
 
             return Task.CompletedTask;
         }
