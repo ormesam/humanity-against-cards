@@ -33,9 +33,13 @@ namespace Server {
 
             services.AddControllers();
 
-            services.AddSignalR();
+            services.AddSignalR()
+                .AddJsonProtocol(config => {
+                    config.PayloadSerializerOptions.PropertyNamingPolicy = null;
+                });
 
             services.AddSingleton<Controller>();
+            //services.AddSingleton<GameHub>(); // I think this is the correct way to go, needs some changing of code though
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {

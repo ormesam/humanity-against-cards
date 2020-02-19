@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Common.Dtos;
 using Common.Exceptions;
 using Common.Interfaces;
-using Hangfire;
 using Microsoft.AspNetCore.SignalR;
 using Server.Hubs;
 
@@ -53,11 +52,9 @@ namespace Server.Game {
         }
 
         public void StartGame(string code) {
-            BackgroundJob.Enqueue(() => StartGame(sessions[code]));
-        }
+            var session = sessions[code];
 
-        public async Task StartGame(Session session) {
-            await session.Start();
+            Task.Run(() => session.Start());
         }
 
         public Task SubmitCard(string code, string connectionId, Guid answerCardId) {

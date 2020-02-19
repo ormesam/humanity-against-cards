@@ -10,5 +10,6 @@ namespace Common.Interfaces {
         Task ShowAnswers(IList<SubmittedCard> submittedAnswers);
         Task UpdateTimer(int seconds);
         Task ShowWinningCard(SubmittedCard topCard);
+        Task GameStateChanged(GameState state);
     }
 }

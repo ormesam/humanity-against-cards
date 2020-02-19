@@ -32,6 +32,10 @@ namespace Server.Game {
         }
 
         public async Task Start() {
+            await ChangeGameState(GameState.Running);
+
+            SetUpGame();
+
             while (Players.Any() && QuestionPile.Any()) {
                 SetUpRound();
                 await DealCards();
@@ -42,6 +46,25 @@ namespace Server.Game {
                 // Wait for users to cast their votes
                 await Sleep(30, CheckIfMaxVotesHaveBeenCast);
                 await CalculateAndDisplayWinningCard();
+            }
+
+            await ChangeGameState(GameState.Ended);
+        }
+
+        private async Task ChangeGameState(GameState state) {
+            GameState = state;
+            await gameHub.Clients.Group(Code).GameStateChanged(state);
+        }
+
+        private void SetUpGame() {
+            CardGenerator generator = new CardGenerator();
+
+            foreach (var card in generator.GenerateQuestions()) {
+                QuestionPile.Enqueue(card);
+            }
+
+            foreach (var card in generator.GenerateAnswers()) {
+                AnswerPile.Enqueue(card);
             }
         }
 
@@ -88,7 +111,7 @@ namespace Server.Game {
 
         private async Task DealCards() {
             foreach (var player in Players) {
-                if (player.Hand.Count < maxCardsInHand) {
+                while (player.Hand.Count < maxCardsInHand) {
                     var card = AnswerPile.Dequeue();
 
                     player.Hand.Add(card);

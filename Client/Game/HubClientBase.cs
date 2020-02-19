@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
+using Newtonsoft.Json;
 
 namespace Client.Game {
     public abstract class HubClientBase : IAsyncDisposable {
@@ -24,12 +25,12 @@ namespace Client.Game {
 
             started = true;
 
-            LinkHubConnections();
+            RegisterHubConnections();
 
             await HubConnection.StartAsync();
         }
 
-        protected abstract void LinkHubConnections();
+        protected abstract void RegisterHubConnections();
 
         public async Task StopAsync() {
             if (!started) {
@@ -41,6 +42,14 @@ namespace Client.Game {
 
             HubConnection = null;
             started = false;
+        }
+
+        public void Register<T>(string methodName, Action<T> handler) {
+            HubConnection.On<object>(methodName, (obj) => {
+                var parsed = JsonConvert.DeserializeObject<T>(obj.ToString());
+
+                handler(parsed);
+            });
         }
 
         public async ValueTask DisposeAsync() {

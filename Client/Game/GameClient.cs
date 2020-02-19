@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Client.Events;
 using Common.Dtos;
 using Common.Exceptions;
 using Common.Interfaces;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Client.Game {
     public class GameClient : HubClientBase {
@@ -60,9 +60,10 @@ namespace Client.Game {
             hand = new List<AnswerCard>();
         }
 
-        protected override void LinkHubConnections() {
-            HubConnection.On<string>(nameof(IGameClient.PlayerJoined), (name) => UpdateUI());
-            HubConnection.On<IList<AnswerCard>>(nameof(IGameClient.ShowHand), (hand) => { Hand = hand; });
+        protected override void RegisterHubConnections() {
+            Register<string>(nameof(IGameClient.PlayerJoined), (name) => UpdateUI());
+            Register<IList<AnswerCard>>(nameof(IGameClient.ShowHand), (cards) => { Hand = cards; });
+            Register<GameState>(nameof(IGameClient.GameStateChanged), (state) => { State = state; });
         }
 
         public async Task CreateGame(string name) {
@@ -103,6 +104,7 @@ namespace Client.Game {
         }
 
         private void UpdateUI() {
+            Debug.WriteLine("UI Updated");
             UIUpdated?.Invoke();
         }
     }
