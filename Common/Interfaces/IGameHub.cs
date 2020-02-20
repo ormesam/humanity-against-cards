@@ -8,7 +8,7 @@ namespace Common.Interfaces {
         Task<string> CreateGame(string name);
         Task<GameState> JoinGame(string name, string code);
         Task Vote(string code, Guid submittedCardId);
-        Task SubmitCards(string code, IList<Guid> answerCardId);
+        Task SubmitCards(string code, IList<Guid> answerCardIds);
         void StartGame(string code);
     }
 }

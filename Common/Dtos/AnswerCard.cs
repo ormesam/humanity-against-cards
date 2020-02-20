@@ -3,7 +3,7 @@
         public string Text { get; set; }
         public int Votes { get; set; }
 
-        public AnswerCard(string text) {
+        public AnswerCard(string text) : base() {
             Text = text;
             Votes = 0;
         }

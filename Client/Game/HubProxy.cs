@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR.Client;
 using Common.Interfaces;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Client.Game {
     public static class HubProxy {
         public static async Task Call(this HubClientBase hubClient, Expression<Action<IGameHub>> expression) {
             var methodName = GetMethodName(expression);
             var methodArguments = GetMethodArguments(expression).ToList();
+
+            Debug.WriteLine(methodName + " sent to server");
 
             switch (methodArguments.Count()) {
                 case 0:
@@ -39,6 +42,8 @@ namespace Client.Game {
         public static async Task<T> Call<T>(this HubClientBase hubClient, Expression<Func<IGameHub, Task<T>>> expression) {
             var methodName = GetMethodName(expression);
             var methodArguments = GetMethodArguments(expression).ToList();
+
+            Debug.WriteLine(methodName + " sent to server");
 
             switch (methodArguments.Count()) {
                 case 0:
