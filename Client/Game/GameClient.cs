@@ -14,6 +14,7 @@ namespace Client.Game {
         private GameState state;
         private string code;
         private bool isConnected;
+        private bool hasVoted;
         private QuestionCard currentQuestion;
         private IList<AnswerCard> hand;
         private IList<Guid> cardsToSubmit;
@@ -88,6 +89,7 @@ namespace Client.Game {
         protected override void RegisterHubConnections() {
             Register<string>(nameof(IGameClient.PlayerJoined), (name) => UpdateUI());
             Register<IList<AnswerCard>>(nameof(IGameClient.ShowHand), (cards) => {
+                hasVoted = false;
                 SubmittedAnswers.Clear();
                 Hand = cards;
             });
@@ -141,20 +143,30 @@ namespace Client.Game {
             await this.Call(i => i.StartGame(Code));
         }
 
-        public async Task SubmitCard(Guid cardId) {
-            if (cardsToSubmit.Count == CurrentQuestion.NoOfAnswers) {
+        public async Task SubmitCard(AnswerCard card) {
+            if (card.IsSelected || cardsToSubmit.Count == CurrentQuestion.NoOfAnswers) {
                 return;
             }
 
-            cardsToSubmit.Add(cardId);
+            card.IsSelected = true;
+
+            cardsToSubmit.Add(card.Id);
 
             if (cardsToSubmit.Count == CurrentQuestion.NoOfAnswers) {
                 await this.Call(i => i.SubmitCards(Code, cardsToSubmit));
             }
         }
 
-        public async Task Vote(Guid cardId) {
-            await this.Call(i => i.Vote(Code, cardId));
+        public async Task Vote(SubmittedCard card) {
+            if (hasVoted) {
+                return;
+            }
+
+            hasVoted = true;
+
+            card.IsSelected = true;
+
+            await this.Call(i => i.Vote(Code, card.Id));
         }
 
         private void UpdateUI() {

@@ -37,27 +37,33 @@
     }
 
     if (gameClient.CurrentQuestion != null) {
-        <div class="playing-card inverse">
-            <p>@gameClient.CurrentQuestion.Text</p>
+        <div class="card-container">
+            <div class="playing-card inverse">
+                <p>@gameClient.CurrentQuestion.Text</p>
+            </div>
         </div>
     }
 
     if (gameClient.Hand.Any()) {
-        foreach (var card in gameClient.Hand) {
-            <div class="playing-card" @onclick="@(i => HandCardClicked(card.Id))">
-                <p>@card.Text</p>
-            </div>
-        }
+        <div class="card-container">
+            @foreach (var card in gameClient.Hand) {
+                <div class="playing-card @(card.IsSelected ? "submitted" : "" )" @onclick="@(i => HandCardClicked(card))">
+                    <p>@card.Text</p>
+                </div>
+            }
+        </div>
     }
 
     if (gameClient.SubmittedAnswers.Any()) {
-        foreach (var submittedCard in gameClient.SubmittedAnswers) {
-            <div class=" playing-card @(submittedCard.IsWinningCard ? " winning-card" : "" )" @onclick="@(i => SubmittedCardClicked(submittedCard.Id))">
-                @foreach (var answer in submittedCard.AnswerCards) {
-                    <p>@answer.Text</p>
-                }
-            </div>
-        }
+        <div class="card-container">
+            @foreach (var submittedCard in gameClient.SubmittedAnswers) {
+                <div class=" playing-card @(submittedCard.IsWinningCard ? " winning-card" : submittedCard.IsSelected ? "submitted" : "" )" @onclick="@(i => SubmittedCardClicked(submittedCard))">
+                    @foreach (var answer in submittedCard.AnswerCards) {
+                        <p>@answer.Text</p>
+                    }
+                </div>
+            }
+        </div>
     }
 }
 
@@ -92,12 +98,11 @@
         await gameClient.StartGame();
     }
 
-    private async void HandCardClicked(Guid cardId) {
-        await gameClient.SubmitCard(cardId);
+    private async void HandCardClicked(AnswerCard card) {
+        await gameClient.SubmitCard(card);
     }
 
-    private async void SubmittedCardClicked(Guid cardId) {
-        await gameClient.Vote(cardId);
-
+    private async void SubmittedCardClicked(SubmittedCard card) {
+        await gameClient.Vote(card);
     }
 }

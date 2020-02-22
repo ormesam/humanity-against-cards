@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Common.Dtos;
+using Common.Exceptions;
 using Common.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using Server.Hubs;
@@ -69,7 +70,7 @@ namespace Server.Game {
         }
 
         private bool CheckIfMaxVotesHaveBeenCast() {
-            return SubmittedAnswers.Count == Players.Count;
+            return SubmittedAnswers.Sum(i => i.Votes) == Players.Count;
         }
 
         private bool CheckIfMaxAnswersHaveBeenSubmitted() {
@@ -134,6 +135,10 @@ namespace Server.Game {
         }
 
         public async Task<GameState> Join(string connectionId, string name) {
+            if (GameState != GameState.NotStarted) {
+                throw new GameAlreadyStartedException();
+            }
+
             Players.Add(new Player(connectionId, name));
 
             await gameHub.Clients.Group(Code).PlayerJoined(name);
