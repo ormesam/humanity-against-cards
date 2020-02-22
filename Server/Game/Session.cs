@@ -85,6 +85,9 @@ namespace Server.Game {
                 .OrderByDescending(i => i.Votes)
                 .First();
 
+            var winningPlayer = Players.Single(i => i.ConnectionId == topCard.PlayerId);
+            winningPlayer.CardsWon.Add(CurrentQuestion);
+
             await gameHub.Clients.Group(Code).ShowWinningCard(topCard);
         }
 
