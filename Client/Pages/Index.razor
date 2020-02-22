@@ -29,8 +29,9 @@
     </div>
 
 } else {
-    <button class="btn btn-primary" @onclick="LeaveGame">Leave</button>
-    <p>Code: @gameClient.Code</p>
+    <div>
+        <p class="text-center">Code: @gameClient.Code</p>
+    </div>
 
     if (gameClient.State == GameState.NotStarted) {
         <button @onclick="StartGame">Start</button>
@@ -40,6 +41,9 @@
         <div class="card-container">
             <div class="playing-card inverse">
                 <p>@gameClient.CurrentQuestion.Text</p>
+                <div class="timer">
+                    <p>@gameClient.Timer</p>
+                </div>
             </div>
         </div>
     }

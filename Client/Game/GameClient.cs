@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Client.Events;
@@ -15,6 +14,7 @@ namespace Client.Game {
         private string code;
         private bool isConnected;
         private bool hasVoted;
+        private int timer;
         private QuestionCard currentQuestion;
         private IList<AnswerCard> hand;
         private IList<Guid> cardsToSubmit;
@@ -80,6 +80,16 @@ namespace Client.Game {
             }
         }
 
+        public int Timer {
+            get => timer;
+            set {
+                if (timer != value) {
+                    timer = value;
+                    UpdateUI();
+                }
+            }
+        }
+
         public GameClient(NavigationManager navigationManager) : base(navigationManager) {
             cardsToSubmit = new List<Guid>();
             hand = new List<AnswerCard>();
@@ -103,6 +113,9 @@ namespace Client.Game {
             Register<SubmittedCard>(nameof(IGameClient.ShowWinningCard), (winningCard) => {
                 submittedAnswers.Single(i => i.Id == winningCard.Id).IsWinningCard = true;
                 UpdateUI();
+            });
+            Register<int>(nameof(IGameClient.UpdateTimer), (seconds) => {
+                Timer = seconds;
             });
         }
 
@@ -170,7 +183,6 @@ namespace Client.Game {
         }
 
         private void UpdateUI() {
-            Debug.WriteLine("UI Updated");
             UIUpdated?.Invoke();
         }
     }

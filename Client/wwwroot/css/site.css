@@ -2,7 +2,7 @@
 
 html, body {
     font-family: 'Helvetica','Arial',sans-serif;
-    background-color: lightgray;
+    background-color: #e9ebee;
 }
 
 .card-container {
@@ -62,11 +62,11 @@ html, body {
         top: 0.5rem;
     }
 
-@media (max-width: 767.98px) {
-}
-
-@media (min-width: 768px) {
-    app {
-        flex-direction: row;
-    }
+.timer {
+    font-family: 'Orbitron',sans-serif;
+    color: white;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 10px;
 }
