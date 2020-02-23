@@ -26,7 +26,7 @@
             <p>My name is</p>
             <input type="text" @bind-value="name" />
             <div class="footer">
-                <a @onclick="SetupGame">Start</a>
+                <a @onclick="SetupGame">Create</a>
             </div>
         </div>
     </div>
@@ -42,7 +42,7 @@
             <p>Room Code</p>
             <input type="text" @bind-value="roomCode" />
             <div class="footer">
-                <a @onclick="SetupGame">Start</a>
+                <a @onclick="SetupGame">Join</a>
             </div>
         </div>
     </div>
@@ -52,10 +52,14 @@
     <div class="centre-content">
         <p class="text-center">Code: @gameClient.Code</p>
         <p class="text-center">Players</p>
-        @foreach (var item in gameClient.Leaderboard) {
-            <p>@item.PlayerName</p>
-        }
-        <button class="btn btn-primary" @onclick="StartGame">Start</button>
+        <div class="centre-container">
+            @foreach (var item in gameClient.Leaderboard) {
+                <div class="playing-card">
+                    <p>@item.PlayerName</p>
+                </div>
+            }
+        </div>
+        <button class="btn btn-primary" @onclick="StartGame">Start Game</button>
     </div>
 }
 
