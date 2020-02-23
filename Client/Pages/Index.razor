@@ -6,7 +6,7 @@
 @if (gameClient.State == GameState.None) {
     <div class="centre-container">
         <div class="playing-card inverse">
-            <p>I want to _</p>
+            <p>I want to _______</p>
         </div>
     </div>
     <div class="centre-container">
@@ -63,7 +63,7 @@
     @if (gameClient.CurrentQuestion != null) {
         <div class="centre-container">
             <div class="playing-card inverse">
-                <p>@gameClient.CurrentQuestion.Text</p>
+                <p>@gameClient.CurrentQuestion.Text.Replace("\n", "</br>").Replace("_", "_______")</p>
                 <div class="footer">
                     <p>@gameClient.Timer</p>
                 </div>
