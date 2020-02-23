@@ -72,6 +72,11 @@
     }
 
     @if (gameClient.Hand.Any()) {
+        if (gameClient.CurrentQuestion != null) {
+            <div class="centre-container">
+                <p>Select @gameClient.CurrentQuestion.NoOfAnswers@(gameClient.CurrentQuestion.NoOfAnswers > 1 ? ", in order," : "") to submit</p>
+            </div>
+        }
         <div class="centre-container">
             @foreach (var card in gameClient.Hand) {
                 <div class="playing-card @(card.IsSelected ? " submitted" : "" )" @onclick="@(i => HandCardClicked(card))">
@@ -82,6 +87,13 @@
     }
 
     @if (gameClient.SubmittedAnswers.Any()) {
+        <div class="centre-container">
+            @if (gameClient.SubmittedAnswers.Any(i => i.IsWinningCard)) {
+                <p>And the winner is...</p>
+            } else {
+                <p>Vote for your favourite card</p>
+            }
+        </div>
         <div class="centre-container">
             @foreach (var submittedCard in gameClient.SubmittedAnswers) {
                 <div class=" playing-card @(submittedCard.IsWinningCard ? " winning-card" : submittedCard.IsSelected ? "submitted" : "" )" @onclick="@(i => SubmittedCardClicked(submittedCard))">
