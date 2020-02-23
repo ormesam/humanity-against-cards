@@ -1,0 +1,155 @@
+﻿@using Game;
+@inject NavigationManager navigationManager
+@page "/"
+
+<h1 class="text-center">Humanity Against Cards</h1>
+@if (gameClient.State == GameState.None) {
+    <div class="centre-container">
+        <div class="playing-card inverse">
+            <p>I want to _______</p>
+        </div>
+    </div>
+    <div class="centre-container">
+        <div class="playing-card" @onclick="CreateGame">
+            <p>Create Game</p>
+        </div>
+
+        <div class="playing-card" @onclick="JoinGame">
+            <p>Join Game</p>
+        </div>
+    </div>
+}
+
+@if (gameClient.State == GameState.Creating) {
+    <div class="centre-container">
+        <div class="playing-card inverse">
+            <p>My name is</p>
+            <input type="text" @bind-value="name" />
+            <div class="footer">
+                <a @onclick="SetupGame">Create</a>
+            </div>
+        </div>
+    </div>
+}
+
+@if (gameClient.State == GameState.Joining) {
+    <div class="centre-container">
+        <div class="playing-card inverse">
+            <p>My name is</p>
+            <input type="text" @bind-value="name" />
+            <br />
+            <br />
+            <p>Room Code</p>
+            <input type="text" @bind-value="roomCode" />
+            <div class="footer">
+                <a @onclick="SetupGame">Join</a>
+            </div>
+        </div>
+    </div>
+}
+
+@if (gameClient.State == GameState.NotStarted) {
+    <div class="centre-content">
+        <p class="text-center">Code: @gameClient.Code</p>
+        <p class="text-center">Players</p>
+        <div class="centre-container">
+            @foreach (var item in gameClient.Leaderboard) {
+                <div class="playing-card">
+                    <p>@item.PlayerName</p>
+                </div>
+            }
+        </div>
+        <button class="btn btn-primary" @onclick="StartGame">Start Game</button>
+    </div>
+}
+
+@if (gameClient.State == GameState.Running) {
+    @if (gameClient.CurrentQuestion != null) {
+        <div class="centre-container">
+            <div class="playing-card inverse">
+                <p>@gameClient.CurrentQuestion.Text.Replace("\n", "</br>").Replace("_", "_______")</p>
+                <div class="footer">
+                    <p>@gameClient.Timer</p>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (gameClient.Hand.Any()) {
+        if (gameClient.CurrentQuestion != null) {
+            <div class="centre-container">
+                <p>Select @gameClient.CurrentQuestion.NoOfAnswers@(gameClient.CurrentQuestion.NoOfAnswers > 1 ? ", in order," : "") to submit</p>
+            </div>
+        }
+        <div class="centre-container">
+            @foreach (var card in gameClient.Hand) {
+                <div class="playing-card @(card.IsSelected ? " submitted" : "" )" @onclick="@(i => HandCardClicked(card))">
+                    <p>@card.Text</p>
+                </div>
+            }
+        </div>
+    }
+
+    @if (gameClient.SubmittedAnswers.Any()) {
+        <div class="centre-container">
+            @if (gameClient.SubmittedAnswers.Any(i => i.IsWinningCard)) {
+                <p>And the winner is...</p>
+            } else {
+                <p>Vote for your favourite card</p>
+            }
+        </div>
+        <div class="centre-container">
+            @foreach (var submittedCard in gameClient.SubmittedAnswers) {
+                <div class=" playing-card @(submittedCard.IsWinningCard ? " winning-card" : submittedCard.IsSelected ? "submitted" : "" )" @onclick="@(i => SubmittedCardClicked(submittedCard))">
+                    @foreach (var answer in submittedCard.AnswerCards) {
+                        <p>@answer.Text</p>
+                    }
+                </div>
+            }
+        </div>
+    }
+}
+
+@code {
+    private string name;
+    private string roomCode;
+    private GameClient gameClient;
+
+    protected override void OnInitialized() {
+        gameClient = new GameClient(navigationManager);
+
+        gameClient.UIUpdated += () => {
+            StateHasChanged();
+        };
+
+        base.OnInitialized();
+    }
+
+    private void CreateGame() {
+        gameClient.State = GameState.Creating;
+    }
+
+    private void JoinGame() {
+        gameClient.State = GameState.Joining;
+    }
+
+    private async void SetupGame() {
+        await gameClient.SetupGame(name, roomCode);
+    }
+
+    private async void LeaveGame() {
+        await gameClient.LeaveGame();
+    }
+
+    private async void StartGame() {
+        await gameClient.StartGame();
+    }
+
+    private async void HandCardClicked(AnswerCard card) {
+        await gameClient.SubmitCard(card);
+    }
+
+    private async void SubmittedCardClicked(SubmittedCard card) {
+        await gameClient.Vote(card);
+    }
+}
