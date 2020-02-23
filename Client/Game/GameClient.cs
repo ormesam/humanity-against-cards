@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Client.Events;
 using Common.Dtos;
-using Common.Exceptions;
 using Common.Interfaces;
 using Microsoft.AspNetCore.Components;
 
@@ -12,13 +11,13 @@ namespace Client.Game {
     public class GameClient : HubClientBase {
         private GameState state;
         private string code;
-        private bool isConnected;
         private bool hasVoted;
         private int timer;
         private QuestionCard currentQuestion;
         private IList<AnswerCard> hand;
         private IList<Guid> cardsToSubmit;
         private IList<SubmittedCard> submittedAnswers;
+        private IList<LeaderboardItem> leaderboard;
 
         public event UIUpdatedEventHandler UIUpdated;
 
@@ -37,16 +36,6 @@ namespace Client.Game {
             private set {
                 if (code != value) {
                     code = value;
-                    UpdateUI();
-                }
-            }
-        }
-
-        public bool IsConnected {
-            get => isConnected;
-            private set {
-                if (isConnected != value) {
-                    isConnected = value;
                     UpdateUI();
                 }
             }
@@ -90,10 +79,21 @@ namespace Client.Game {
             }
         }
 
+        public IList<LeaderboardItem> Leaderboard {
+            get => leaderboard;
+            set {
+                if (leaderboard != value) {
+                    leaderboard = value;
+                    UpdateUI();
+                }
+            }
+        }
+
         public GameClient(NavigationManager navigationManager) : base(navigationManager) {
             cardsToSubmit = new List<Guid>();
             hand = new List<AnswerCard>();
             submittedAnswers = new List<SubmittedCard>();
+            leaderboard = new List<LeaderboardItem>();
         }
 
         protected override void RegisterHubConnections() {
@@ -117,39 +117,60 @@ namespace Client.Game {
             Register<int>(nameof(IGameClient.UpdateTimer), (seconds) => {
                 Timer = seconds;
             });
+            Register<IList<LeaderboardItem>>(nameof(IGameClient.UpdateLeaderboard), (leaderboard) => { Leaderboard = leaderboard; });
         }
 
-        public async Task CreateGame(string name) {
+        public async Task SetupGame(string name, string code) {
+            if (string.IsNullOrWhiteSpace(name)) {
+                return;
+            }
+
+            switch (State) {
+                case GameState.Creating:
+                    await CreateGame(name);
+                    break;
+                case GameState.Joining:
+                    if (string.IsNullOrWhiteSpace(code)) {
+                        return;
+                    }
+
+                    await JoinGame(name, code);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private async Task CreateGame(string name) {
             await StartAsync();
 
             Code = await this.Call(i => i.CreateGame(name));
 
-            IsConnected = true;
+            State = GameState.NotStarted;
         }
 
-        public async Task JoinGame(string name, string code) {
+        private async Task JoinGame(string name, string code) {
             await StartAsync();
 
-            try {
+            bool joined = await this.Call(i => i.JoinGame(name, code));
 
-            } catch (GameNotFoundException) {
+            if (!joined) {
                 await StopAsync();
+
+                // show error message
 
                 return;
             }
 
-            GameState state = await this.Call(i => i.JoinGame(name, code));
-
-            State = state;
             Code = code;
 
-            IsConnected = true;
+            State = GameState.NotStarted;
         }
 
         public async Task LeaveGame() {
             await StopAsync();
 
-            IsConnected = false;
+            State = GameState.None;
         }
 
         public async Task StartGame() {

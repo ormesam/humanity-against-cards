@@ -3,63 +3,87 @@
 @inject NavigationManager navigationManager
 @page "/"
 
-@if (!gameClient.IsConnected) {
-    <div class="container">
-        <div class="row">
-            <div class="col-12 col-md-6 offset-md-3">
-                <h1>Humanity Against Cards</h1>
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" @bind-value="name">
-                </div>
-                <div class="form-group">
-                    <label for="code">Code</label>
-                    <input type="text" class="form-control" id="code" @bind-value="roomCode">
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <button class="btn btn-success btn-block" @onclick="CreateGame">Create</button>
-                    </div>
-                    <div class="col">
-                        <button class="btn btn-primary btn-block" @onclick="JoinGame">Join</button>
-                    </div>
-                </div>
+<h1 class="text-center">Humanity Against Cards</h1>
+@if (gameClient.State == GameState.None) {
+    <div class="centre-container">
+        <div class="playing-card inverse">
+            <p>I want to _</p>
+        </div>
+    </div>
+    <div class="centre-container">
+        <div class="playing-card" @onclick="CreateGame">
+            <p>Create Game</p>
+        </div>
+
+        <div class="playing-card" @onclick="JoinGame">
+            <p>Join Game</p>
+        </div>
+    </div>
+}
+
+@if (gameClient.State == GameState.Creating) {
+    <div class="centre-container">
+        <div class="playing-card inverse">
+            <p>My name is</p>
+            <input type="text" @bind-value="name" />
+            <div class="footer">
+                <a @onclick="SetupGame">Start</a>
             </div>
         </div>
     </div>
+}
 
-} else {
-    <div>
-        <p class="text-center">Code: @gameClient.Code</p>
+@if (gameClient.State == GameState.Joining) {
+    <div class="centre-container">
+        <div class="playing-card inverse">
+            <p>My name is</p>
+            <input type="text" @bind-value="name" />
+            <br />
+            <br />
+            <p>Room Code</p>
+            <input type="text" @bind-value="roomCode" />
+            <div class="footer">
+                <a @onclick="SetupGame">Start</a>
+            </div>
+        </div>
     </div>
+}
 
-    if (gameClient.State == GameState.NotStarted) {
-        <button @onclick="StartGame">Start</button>
-    }
+@if (gameClient.State == GameState.NotStarted) {
+    <div class="centre-content">
+        <p class="text-center">Code: @gameClient.Code</p>
+        <p class="text-center">Players</p>
+        @foreach (var item in gameClient.Leaderboard) {
+            <p>@item.PlayerName</p>
+        }
+        <button class="btn btn-primary" @onclick="StartGame">Start</button>
+    </div>
+}
 
-    if (gameClient.CurrentQuestion != null) {
-        <div class="card-container">
+@if (gameClient.State == GameState.Running) {
+    @if (gameClient.CurrentQuestion != null) {
+        <div class="centre-container">
             <div class="playing-card inverse">
                 <p>@gameClient.CurrentQuestion.Text</p>
-                <div class="timer">
+                <div class="footer">
                     <p>@gameClient.Timer</p>
                 </div>
             </div>
         </div>
     }
 
-    if (gameClient.Hand.Any()) {
-        <div class="card-container">
+    @if (gameClient.Hand.Any()) {
+        <div class="centre-container">
             @foreach (var card in gameClient.Hand) {
-                <div class="playing-card @(card.IsSelected ? "submitted" : "" )" @onclick="@(i => HandCardClicked(card))">
+                <div class="playing-card @(card.IsSelected ? " submitted" : "" )" @onclick="@(i => HandCardClicked(card))">
                     <p>@card.Text</p>
                 </div>
             }
         </div>
     }
 
-    if (gameClient.SubmittedAnswers.Any()) {
-        <div class="card-container">
+    @if (gameClient.SubmittedAnswers.Any()) {
+        <div class="centre-container">
             @foreach (var submittedCard in gameClient.SubmittedAnswers) {
                 <div class=" playing-card @(submittedCard.IsWinningCard ? " winning-card" : submittedCard.IsSelected ? "submitted" : "" )" @onclick="@(i => SubmittedCardClicked(submittedCard))">
                     @foreach (var answer in submittedCard.AnswerCards) {
@@ -86,12 +110,16 @@
         base.OnInitialized();
     }
 
-    private async void CreateGame() {
-        await gameClient.CreateGame(name);
+    private void CreateGame() {
+        gameClient.State = GameState.Creating;
     }
 
-    private async void JoinGame() {
-        await gameClient.JoinGame(name, roomCode);
+    private void JoinGame() {
+        gameClient.State = GameState.Joining;
+    }
+
+    private async void SetupGame() {
+        await gameClient.SetupGame(name, roomCode);
     }
 
     private async void LeaveGame() {

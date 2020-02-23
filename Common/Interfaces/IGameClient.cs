@@ -11,5 +11,6 @@ namespace Common.Interfaces {
         Task UpdateTimer(int seconds);
         Task ShowWinningCard(SubmittedCard topCard);
         Task GameStateChanged(GameState state);
+        Task UpdateLeaderboard(IList<LeaderboardItem> leaderboard);
     }
 }

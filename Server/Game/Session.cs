@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Common.Dtos;
-using Common.Exceptions;
 using Common.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using Server.Hubs;
@@ -47,6 +46,7 @@ namespace Server.Game {
                 await Sleep(30, CheckIfMaxVotesHaveBeenCast);
                 await CalculateAndDisplayWinningCard();
                 await Sleep(8, () => false);
+                await UpdateLeaderboard();
             }
 
             await ChangeGameState(GameState.Ended);
@@ -134,16 +134,18 @@ namespace Server.Game {
             }
         }
 
-        public async Task<GameState> Join(string connectionId, string name) {
+        public async Task<bool> Join(string connectionId, string name) {
             if (GameState != GameState.NotStarted) {
-                throw new GameAlreadyStartedException();
+                return false;
             }
 
             Players.Add(new Player(connectionId, name));
 
-            await gameHub.Clients.Group(Code).PlayerJoined(name);
+            await UpdateLeaderboard();
 
-            return GameState;
+            await gameHub.Clients.Client(connectionId).UpdateLeaderboard(GetLeaderboard());
+
+            return true;
         }
 
         public void SubmitCards(string connectionId, IList<Guid> answerCardIds) {
@@ -173,6 +175,16 @@ namespace Server.Game {
 
             var card = SubmittedAnswers.Single(i => i.Id == submittedCardId);
             card.Votes++;
+        }
+
+        private async Task UpdateLeaderboard() {
+            await gameHub.Clients.Group(Code).UpdateLeaderboard(GetLeaderboard());
+        }
+
+        private IList<LeaderboardItem> GetLeaderboard() {
+            return Players
+                .Select(i => new LeaderboardItem(i.Name, i.CardsWon.Count))
+                .ToList();
         }
     }
 }

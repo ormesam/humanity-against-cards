@@ -5,7 +5,7 @@ html, body {
     background-color: #e9ebee;
 }
 
-.card-container {
+.centre-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -43,6 +43,19 @@ html, body {
         color: white;
     }
 
+    .playing-card .footer {
+        font-family: 'Orbitron',sans-serif;
+        color: white;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        padding: 10px;
+    }
+
+    .playing-card input {
+        width: 100%;
+    }
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
@@ -62,11 +75,9 @@ html, body {
         top: 0.5rem;
     }
 
-.timer {
-    font-family: 'Orbitron',sans-serif;
-    color: white;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    padding: 10px;
+.centre-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }

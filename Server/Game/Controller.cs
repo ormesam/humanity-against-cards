@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Common.Dtos;
 using Common.Exceptions;
 using Common.Interfaces;
 using Microsoft.AspNetCore.SignalR;
@@ -43,9 +42,9 @@ namespace Server.Game {
             return roomCode;
         }
 
-        public async Task<GameState> JoinSession(string connectionId, string name, string code) {
+        public async Task<bool> JoinSession(string connectionId, string name, string code) {
             if (!sessions.ContainsKey(code)) {
-                throw new GameNotFoundException();
+                return false;
             }
 
             return await sessions[code].Join(connectionId, name);
