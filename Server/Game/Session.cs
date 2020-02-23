@@ -158,6 +158,10 @@ namespace Server.Game {
                 .Where(i => answerCardIds.Contains(i.Id))
                 .ToList();
 
+            foreach (var answerCard in answerCards) {
+                player.Hand.Remove(answerCard);
+            }
+
             SubmittedAnswers.Add(new SubmittedCard {
                 PlayerId = connectionId,
                 AnswerCards = answerCards,
