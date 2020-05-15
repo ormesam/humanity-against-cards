@@ -51,7 +51,7 @@
 @if (gameClient.State == GameState.NotStarted) {
     <div class="centre-content">
         <p class="text-center">Code: @gameClient.Code</p>
-        <p class="text-center">Players</p>
+        <p class="text-center">Waiting for players...</p>
         <div class="centre-container">
             @foreach (var item in gameClient.Leaderboard) {
                 <div class="playing-card">
@@ -134,6 +134,9 @@
     }
 
     private async void SetupGame() {
+        name = name?.ToUpper();
+        roomCode = roomCode?.ToUpper();
+
         await gameClient.SetupGame(name, roomCode);
     }
 

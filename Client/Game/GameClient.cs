@@ -12,6 +12,7 @@ namespace Client.Game {
         private GameState state;
         private string code;
         private bool hasVoted;
+        private bool isSettingUp;
         private int timer;
         private QuestionCard currentQuestion;
         private IList<AnswerCard> hand;
@@ -121,7 +122,14 @@ namespace Client.Game {
         }
 
         public async Task SetupGame(string name, string code) {
+            if (isSettingUp) {
+                return;
+            }
+
+            isSettingUp = true;
+
             if (string.IsNullOrWhiteSpace(name)) {
+                isSettingUp = false;
                 return;
             }
 
@@ -139,6 +147,8 @@ namespace Client.Game {
                 default:
                     break;
             }
+
+            isSettingUp = false;
         }
 
         private async Task CreateGame(string name) {
