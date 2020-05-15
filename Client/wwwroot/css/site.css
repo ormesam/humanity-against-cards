@@ -5,6 +5,10 @@ html, body {
     background-color: #e9ebee;
 }
 
+input[type=text] {
+    text-transform: uppercase;
+}
+
 .centre-container {
     display: flex;
     justify-content: center;

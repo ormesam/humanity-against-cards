@@ -1,6 +1,7 @@
 ﻿@using Game;
 @inject NavigationManager navigationManager
 @page "/"
+@page "/{RoomCode}"
 
 <h1 class="text-center">Humanity Against Cards</h1>
 @if (gameClient.State == GameState.None) {
@@ -40,7 +41,7 @@
             <br />
             <br />
             <p>Room Code</p>
-            <input type="text" @bind-value="roomCode" />
+            <input type="text" @bind-value="RoomCode" />
             <div class="footer">
                 <a @onclick="SetupGame">Join</a>
             </div>
@@ -112,8 +113,10 @@
 
 @code {
     private string name;
-    private string roomCode;
     private GameClient gameClient;
+
+    [Parameter]
+    public string RoomCode { get; set; }
 
     protected override void OnInitialized() {
         gameClient = new GameClient(navigationManager);
@@ -121,6 +124,10 @@
         gameClient.UIUpdated += () => {
             StateHasChanged();
         };
+
+        if (!string.IsNullOrWhiteSpace(RoomCode)) {
+            gameClient.State = GameState.Joining;
+        }
 
         base.OnInitialized();
     }
@@ -135,9 +142,9 @@
 
     private async void SetupGame() {
         name = name?.ToUpper();
-        roomCode = roomCode?.ToUpper();
+        RoomCode = RoomCode?.ToUpper();
 
-        await gameClient.SetupGame(name, roomCode);
+        await gameClient.SetupGame(name, RoomCode);
     }
 
     private async void LeaveGame() {
