@@ -24,11 +24,13 @@ namespace Server.Hubs {
         public async Task<bool> JoinGame(string name, string code) {
             code = code.ToUpperInvariant().Trim();
 
-            await controller.JoinSession(Context.ConnectionId, name, code);
+            bool joined = await controller.JoinSession(Context.ConnectionId, name, code);
 
-            await Groups.AddToGroupAsync(Context.ConnectionId, code);
+            if (joined) {
+                await Groups.AddToGroupAsync(Context.ConnectionId, code);
+            }
 
-            return true;
+            return joined;
         }
 
         public void StartGame(string code) {
