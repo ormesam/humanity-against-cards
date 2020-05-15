@@ -40,7 +40,7 @@ namespace Server.Game {
                 await DealCards();
                 await ShowQuestion();
                 // Wait for users to pick their answers
-                await Sleep(30, CheckIfMaxAnswersHaveBeenSubmitted);
+                await Sleep(60, CheckIfMaxAnswersHaveBeenSubmitted);
                 await ShowAnswers();
                 // Wait for users to cast their votes
                 await Sleep(30, CheckIfMaxVotesHaveBeenCast);
