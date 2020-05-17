@@ -7,6 +7,7 @@ html, body {
 
 input[type=text] {
     text-transform: uppercase;
+    font-weight: bold;
 }
 
 .centre-container {
@@ -16,15 +17,19 @@ input[type=text] {
     flex-wrap: wrap;
 }
 
+.cards .playing-card:not(:first-child) {
+    margin-top: -100px;
+}
+
 .playing-card {
-    width: 250px;
-    height: 350px;
+    width: 175px;
+    height: 250px;
     padding: 10px;
     border: solid 1px #a9a9a9;
     border-radius: 10px;
     display: inline-block;
     vertical-align: top;
-    font-size: 22px;
+    font-size: 18px;
     font-weight: bold;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,.5);
     transition: .3s;
@@ -84,4 +89,10 @@ input[type=text] {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+}
+
+@media only screen and (min-width: 370px) {
+    .cards .playing-card:not(:first-child) {
+        margin-top: 5px;
+    }
 }

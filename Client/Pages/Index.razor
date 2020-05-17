@@ -10,7 +10,7 @@
             <p>I want to _______</p>
         </div>
     </div>
-    <div class="centre-container">
+    <div class="centre-container cards">
         <div class="playing-card" @onclick="CreateGame">
             <p>Create Game</p>
         </div>
@@ -82,7 +82,7 @@
                 <p>Select @gameClient.CurrentQuestion.NoOfAnswers@(gameClient.CurrentQuestion.NoOfAnswers > 1 ? ", in order," : "") to submit</p>
             </div>
         }
-        <div class="centre-container">
+        <div class="centre-container cards">
             @foreach (var card in gameClient.Hand) {
                 <div class="playing-card @(card.IsSelected ? " submitted" : "" )" @onclick="@(i => HandCardClicked(card))">
                     <p>@card.Text</p>
@@ -99,9 +99,9 @@
                 <p>Vote for your favourite card</p>
             }
         </div>
-        <div class="centre-container">
+        <div class="centre-container cards">
             @foreach (var submittedCard in gameClient.SubmittedAnswers) {
-                <div class=" playing-card @(submittedCard.IsWinningCard ? " winning-card" : submittedCard.IsSelected ? "submitted" : "" )" @onclick="@(i => SubmittedCardClicked(submittedCard))">
+                <div class="playing-card @(submittedCard.IsWinningCard ? " winning-card" : submittedCard.IsSelected ? "submitted" : "" )" @onclick="@(i => SubmittedCardClicked(submittedCard))">
                     @foreach (var answer in submittedCard.AnswerCards) {
                         <p>@answer.Text</p>
                     }
