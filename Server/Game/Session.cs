@@ -43,7 +43,7 @@ namespace Server.Game {
                 await Sleep(60, CheckIfMaxAnswersHaveBeenSubmitted);
                 await ShowAnswers();
                 // Wait for users to cast their votes
-                await Sleep(30, CheckIfMaxVotesHaveBeenCast);
+                await Sleep(60, CheckIfMaxVotesHaveBeenCast);
                 await CalculateAndDisplayWinningCard();
                 await Sleep(8, () => false);
                 await UpdateLeaderboard();
