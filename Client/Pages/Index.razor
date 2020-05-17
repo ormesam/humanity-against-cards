@@ -68,7 +68,7 @@
     @if (gameClient.CurrentQuestion != null) {
         <div class="centre-container">
             <div class="playing-card inverse">
-                <p>@gameClient.CurrentQuestion.Text.Replace("\n", "</br>").Replace("_", "_______")</p>
+                <p>@gameClient.CurrentQuestion.Text.Replace("\n", "<br />").Replace("_", "_______")</p>
                 <div class="footer">
                     <p>@gameClient.Timer</p>
                 </div>

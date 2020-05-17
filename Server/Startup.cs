@@ -52,6 +52,7 @@ namespace Server {
 
             app.UseAuthorization();
 
+            app.UseHangfireDashboard();
             app.UseHangfireServer();
 
             app.UseEndpoints(endpoints => {

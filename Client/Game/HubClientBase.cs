@@ -20,11 +20,12 @@ namespace Client.Game {
                 return;
             }
 
+            started = true;
+
             HubConnection = new HubConnectionBuilder()
                 .WithUrl(navigationManager.ToAbsoluteUri("http://localhost:64075/gameHub"))
+                // .WithUrl(navigationManager.ToAbsoluteUri("https://humanityagainstcards-api.samorme.co.uk/gameHub"))
                 .Build();
-
-            started = true;
 
             RegisterHubConnections();
 
@@ -50,9 +51,7 @@ namespace Client.Game {
                 Debug.WriteLine(methodName + " called");
 
                 try {
-                    Debug.WriteLine(obj.ToString());
                     var parsed = JsonConvert.DeserializeObject<T>(obj.ToString());
-                    Debug.WriteLine(parsed);
 
                     handler(parsed);
                 } catch (Exception ex) {

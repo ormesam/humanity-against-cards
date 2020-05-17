@@ -148,6 +148,18 @@ namespace Server.Game {
             return true;
         }
 
+        public async Task Leave(string connectionId) {
+            var player = Players.SingleOrDefault(i => i.ConnectionId == connectionId);
+
+            if (player == null) {
+                return;
+            }
+
+            Players.Remove(player);
+
+            await UpdateLeaderboard();
+        }
+
         public void SubmitCards(string connectionId, IList<Guid> answerCardIds) {
             if (SubmittedAnswers.Any(i => i.PlayerId == connectionId)) {
                 return;
