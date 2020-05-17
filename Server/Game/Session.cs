@@ -66,7 +66,7 @@ namespace Server.Game {
         private void SetUpGame() {
             CardGenerator generator = new CardGenerator();
 
-            foreach (var card in generator.GenerateQuestions().Take(3)) {
+            foreach (var card in generator.GenerateQuestions()) {
                 QuestionPile.Enqueue(card);
             }
 
