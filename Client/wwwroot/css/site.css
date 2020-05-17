@@ -61,8 +61,26 @@ input[type=text] {
         padding: 10px;
     }
 
+        .playing-card .footer p {
+            margin: 0;
+        }
+
     .playing-card input {
         width: 100%;
+    }
+
+    .playing-card.leaderboard {
+        height: auto;
+        min-height: 250px;
+        padding-bottom: 100px;
+    }
+
+.leaderboard table {
+    width: 100%;
+}
+
+    .leaderboard table td:last-child {
+        text-align: right;
     }
 
 #blazor-error-ui {

@@ -3,113 +3,137 @@
 @page "/"
 @page "/{RoomCode}"
 
-<h1 class="text-center">Humanity Against Cards</h1>
-@if (gameClient.State == GameState.None) {
-    <div class="centre-container">
-        <div class="playing-card inverse">
-            <p>I want to _______</p>
-        </div>
-    </div>
-    <div class="centre-container cards">
-        <div class="playing-card" @onclick="CreateGame">
-            <p>Create Game</p>
-        </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="@(gameClient.State == GameState.Running ? "col-md-9" : "col-12")">
+            @if (gameClient.State == GameState.None) {
+                <div class="centre-container">
+                    <div class="playing-card inverse">
+                        <p>I want to _______</p>
+                    </div>
+                </div>
+                <div class="centre-container cards">
+                    <div class="playing-card" @onclick="CreateGame">
+                        <p>Create Game</p>
+                    </div>
 
-        <div class="playing-card" @onclick="JoinGame">
-            <p>Join Game</p>
-        </div>
-    </div>
-}
-
-@if (gameClient.State == GameState.Creating) {
-    <div class="centre-container">
-        <div class="playing-card inverse">
-            <p>My name is</p>
-            <input type="text" @bind-value="name" />
-            <div class="footer">
-                <a @onclick="SetupGame">Create</a>
-            </div>
-        </div>
-    </div>
-}
-
-@if (gameClient.State == GameState.Joining) {
-    <div class="centre-container">
-        <div class="playing-card inverse">
-            <p>My name is</p>
-            <input type="text" @bind-value="name" />
-            <br />
-            <br />
-            <p>Room Code</p>
-            <input type="text" @bind-value="RoomCode" />
-            <div class="footer">
-                <a @onclick="SetupGame">Join</a>
-            </div>
-        </div>
-    </div>
-}
-
-@if (gameClient.State == GameState.NotStarted) {
-    <div class="centre-content">
-        <p class="text-center">Code: @gameClient.Code</p>
-        <p class="text-center">Waiting for players...</p>
-        <div class="centre-container">
-            @foreach (var item in gameClient.Leaderboard) {
-                <div class="playing-card">
-                    <p>@item.PlayerName</p>
+                    <div class="playing-card" @onclick="JoinGame">
+                        <p>Join Game</p>
+                    </div>
                 </div>
             }
-        </div>
-        <button class="btn btn-primary" @onclick="StartGame">Start Game</button>
-    </div>
-}
 
-@if (gameClient.State == GameState.Running) {
-    @if (gameClient.CurrentQuestion != null) {
-        <div class="centre-container">
-            <div class="playing-card inverse">
-                <p>@gameClient.CurrentQuestion.Text.Replace("\n", "<br />").Replace("_", "_______")</p>
-                <div class="footer">
-                    <p>@gameClient.Timer</p>
-                </div>
-            </div>
-        </div>
-    }
-
-    @if (gameClient.Hand.Any()) {
-        if (gameClient.CurrentQuestion != null) {
-            <div class="centre-container">
-                <p>Select @gameClient.CurrentQuestion.NoOfAnswers@(gameClient.CurrentQuestion.NoOfAnswers > 1 ? ", in order," : "") to submit</p>
-            </div>
-        }
-        <div class="centre-container cards">
-            @foreach (var card in gameClient.Hand) {
-                <div class="playing-card @(card.IsSelected ? " submitted" : "" )" @onclick="@(i => HandCardClicked(card))">
-                    <p>@card.Text</p>
+            @if (gameClient.State == GameState.Creating) {
+                <div class="centre-container">
+                    <div class="playing-card inverse">
+                        <p>My name is</p>
+                        <input type="text" @bind-value="name" />
+                        <div class="footer">
+                            <a @onclick="SetupGame">Create</a>
+                        </div>
+                    </div>
                 </div>
             }
-        </div>
-    }
 
-    @if (gameClient.SubmittedAnswers.Any()) {
-        <div class="centre-container">
-            @if (gameClient.SubmittedAnswers.Any(i => i.IsWinningCard)) {
-                <p>And the winner is...</p>
-            } else {
-                <p>Vote for your favourite card</p>
+            @if (gameClient.State == GameState.Joining) {
+                <div class="centre-container">
+                    <div class="playing-card inverse">
+                        <p>My name is</p>
+                        <input type="text" @bind-value="name" />
+                        <br />
+                        <br />
+                        <p>Room Code</p>
+                        <input type="text" @bind-value="RoomCode" />
+                        <div class="footer">
+                            <a @onclick="SetupGame">Join</a>
+                        </div>
+                    </div>
+                </div>
             }
-        </div>
-        <div class="centre-container cards">
-            @foreach (var submittedCard in gameClient.SubmittedAnswers) {
-                <div class="playing-card @(submittedCard.IsWinningCard ? " winning-card" : submittedCard.IsSelected ? "submitted" : "" )" @onclick="@(i => SubmittedCardClicked(submittedCard))">
-                    @foreach (var answer in submittedCard.AnswerCards) {
-                        <p>@answer.Text</p>
+
+            @if (gameClient.State == GameState.Running) {
+                @if (gameClient.CurrentQuestion != null) {
+                    <div class="centre-container">
+                        <div class="playing-card inverse">
+                            <p>@gameClient.CurrentQuestion.Text.Replace("\n", "<br />").Replace("_", "_______")</p>
+                            <div class="footer">
+                                <p>@gameClient.Timer</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                @if (gameClient.Hand.Any()) {
+                    if (gameClient.CurrentQuestion != null) {
+                        <div class="centre-container">
+                            <p>Select @gameClient.CurrentQuestion.NoOfAnswers@(gameClient.CurrentQuestion.NoOfAnswers > 1 ? ", in order," : "") to submit</p>
+                        </div>
                     }
+                    <div class="centre-container cards">
+                        @foreach (var card in gameClient.Hand) {
+                            <div class="playing-card @(card.IsSelected ? " submitted" : "" )" @onclick="@(i => HandCardClicked(card))">
+                                <p>@card.Text</p>
+                            </div>
+                        }
+                    </div>
+                }
+
+                @if (gameClient.SubmittedAnswers.Any()) {
+                    <div class="centre-container">
+                        @if (gameClient.SubmittedAnswers.Any(i => i.IsWinningCard)) {
+                            <p>And the winner is...</p>
+                        } else {
+                            <p>Vote for your favourite card</p>
+                        }
+                    </div>
+                    <div class="centre-container cards">
+                        @foreach (var submittedCard in gameClient.SubmittedAnswers) {
+                            <div class="playing-card @(submittedCard.IsWinningCard ? " winning-card" : submittedCard.IsSelected ? "submitted" : "" )" @onclick="@(i => SubmittedCardClicked(submittedCard))">
+                                @foreach (var answer in submittedCard.AnswerCards) {
+                                    <p>@answer.Text</p>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            }
+
+            @if (gameClient.State == GameState.NotStarted) {
+                <div class="centre-content">
+                    <p class="text-center">Code: @gameClient.Code</p>
                 </div>
             }
         </div>
-    }
-}
+        <div class="@(gameClient.State == GameState.Running ? "col-md-3" : "col-12")">
+            @if (gameClient.Leaderboard != null && (gameClient.State == GameState.Running || gameClient.State == GameState.Ended || gameClient.State == GameState.NotStarted)) {
+                <div class="centre-container">
+                    <div class="playing-card inverse leaderboard">
+                        <table>
+                            @foreach (var item in gameClient.Leaderboard) {
+                                <tr>
+                                    <td>@item.PlayerName</td>
+                                    <td>@item.Score</td>
+                                </tr>
+                            }
+                        </table>
+                        @if (gameClient.State == GameState.NotStarted) {
+                            <div class="footer">
+                                <p>Waiting for players...</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+                @if (gameClient.State == GameState.NotStarted) {
+                    <div class="centre-content">
+                        <div class="playing-card" @onclick="StartGame">
+                            <p>Start Game</p>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
 
 @code {
     private string name;
