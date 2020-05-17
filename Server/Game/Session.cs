@@ -32,6 +32,12 @@ namespace Server.Game {
 
         public async Task Start() {
             await ChangeGameState(GameState.Running);
+        }
+
+        public async Task Run() {
+            while (GameState != GameState.Running) {
+                await Task.Delay(1000);
+            }
 
             SetUpGame();
 
@@ -60,7 +66,7 @@ namespace Server.Game {
         private void SetUpGame() {
             CardGenerator generator = new CardGenerator();
 
-            foreach (var card in generator.GenerateQuestions()) {
+            foreach (var card in generator.GenerateQuestions().Take(3)) {
                 QuestionPile.Enqueue(card);
             }
 

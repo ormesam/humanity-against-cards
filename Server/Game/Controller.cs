@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Common.Exceptions;
 using Common.Interfaces;
@@ -10,68 +9,54 @@ using Server.Hubs;
 namespace Server.Game {
     public class Controller {
         private readonly IHubContext<GameHub, IGameClient> gameHub;
-        private readonly IDictionary<string, Session> sessions;
-        private readonly Random random;
+
+        public IDictionary<string, Session> Sessions { get; }
 
         public Controller(IHubContext<GameHub, IGameClient> gameHub) {
             this.gameHub = gameHub;
-            sessions = new Dictionary<string, Session>();
-            random = new Random();
+            Sessions = new Dictionary<string, Session>();
         }
 
-        public string CreateSession() {
-            Session session = new Session(gameHub, GenerateCode());
+        public async Task CreateSession(string connectionId, string name, string code) {
+            Session session = new Session(gameHub, code);
 
-            sessions.Add(session.Code, session);
+            Sessions.Add(session.Code, session);
 
-            return session.Code;
-        }
+            await JoinSession(connectionId, name, code);
 
-        private string GenerateCode() {
-            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-            string roomCode = new string(Enumerable.Repeat(chars, 4)
-              .Select(s => s[random.Next(s.Length)])
-              .ToArray());
-
-            // Don't want to create a group with a duplicate room code
-            if (sessions.ContainsKey(roomCode)) {
-                return GenerateCode();
-            }
-
-            return roomCode;
+            await session.Run();
         }
 
         public async Task<bool> JoinSession(string connectionId, string name, string code) {
-            if (!sessions.ContainsKey(code)) {
+            if (!Sessions.ContainsKey(code)) {
                 return false;
             }
 
-            return await sessions[code].Join(connectionId, name);
+            return await Sessions[code].Join(connectionId, name);
         }
 
-        public void StartGame(string code) {
-            var session = sessions[code];
+        public Task StartGame(string code) {
+            var session = Sessions[code];
 
-            Task.Run(() => session.Start());
+            return session.Start();
         }
 
         public Task SubmitCards(string code, string connectionId, IList<Guid> answerCardIds) {
-            if (!sessions.ContainsKey(code)) {
+            if (!Sessions.ContainsKey(code)) {
                 throw new GameNotFoundException();
             }
 
-            sessions[code].SubmitCards(connectionId, answerCardIds);
+            Sessions[code].SubmitCards(connectionId, answerCardIds);
 
             return Task.CompletedTask;
         }
 
         public Task Vote(string code, string connectionId, Guid submittedCardId) {
-            if (!sessions.ContainsKey(code)) {
+            if (!Sessions.ContainsKey(code)) {
                 throw new GameNotFoundException();
             }
 
-            sessions[code].Vote(connectionId, submittedCardId);
+            Sessions[code].Vote(connectionId, submittedCardId);
 
             return Task.CompletedTask;
         }
