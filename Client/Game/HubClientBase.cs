@@ -23,8 +23,11 @@ namespace Client.Game {
             started = true;
 
             HubConnection = new HubConnectionBuilder()
+#if DEBUG
                 .WithUrl(navigationManager.ToAbsoluteUri("http://localhost:64075/gameHub"))
-                // .WithUrl(navigationManager.ToAbsoluteUri("https://humanityagainstcards-api.samorme.co.uk/gameHub"))
+#else
+                .WithUrl(navigationManager.ToAbsoluteUri("https://humanityagainstcards-api.samorme.co.uk/gameHub"))
+#endif
                 .Build();
 
             RegisterHubConnections();
