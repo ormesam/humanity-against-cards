@@ -67,6 +67,10 @@ namespace Server.Game {
             CardGenerator generator = new CardGenerator();
 
             foreach (var card in generator.GenerateQuestions()) {
+                if (card.NoOfAnswers <= 1) {
+                    continue;
+                }
+
                 QuestionPile.Enqueue(card);
             }
 
@@ -172,12 +176,15 @@ namespace Server.Game {
             }
 
             var player = Players.Single(i => i.ConnectionId == connectionId);
-            var answerCards = player.Hand
-                .Where(i => answerCardIds.Contains(i.Id))
-                .ToList();
+            IList<AnswerCard> answerCards = new List<AnswerCard>();
 
-            foreach (var answerCard in answerCards) {
+            foreach (var answerCardId in answerCardIds) {
+                var answerCard = player.Hand.SingleOrDefault(i => i.Id == answerCardId);
+
+                answerCards.Add(answerCard);
                 player.Hand.Remove(answerCard);
+
+                AnswerPile.Enqueue(answerCard);
             }
 
             SubmittedAnswers.Add(new SubmittedCard {
