@@ -92,6 +92,10 @@
                                 @foreach (var answer in submittedCard.AnswerCards) {
                                     <p>@answer.Text</p>
                                 }
+
+                                @if (submittedCard.IsWinningCard) {
+                                    <p>by @submittedCard.PlayerName</p>
+                                }
                             </div>
                         }
                     </div>

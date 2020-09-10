@@ -41,7 +41,7 @@ namespace Server.Game {
 
             SetUpGame();
 
-            while (Players.Any() && QuestionPile.Any()) {
+            while (Players.Any() && QuestionPile.Any() && AnswerPile.Any()) {
                 SetUpRound();
                 await DealCards();
                 await ShowQuestion();
@@ -67,10 +67,6 @@ namespace Server.Game {
             CardGenerator generator = new CardGenerator();
 
             foreach (var card in generator.GenerateQuestions()) {
-                if (card.NoOfAnswers <= 1) {
-                    continue;
-                }
-
                 QuestionPile.Enqueue(card);
             }
 
@@ -125,7 +121,7 @@ namespace Server.Game {
 
         private async Task DealCards() {
             foreach (var player in Players) {
-                while (player.Hand.Count < maxCardsInHand) {
+                while (player.Hand.Count < maxCardsInHand && AnswerPile.Any()) {
                     var card = AnswerPile.Dequeue();
 
                     player.Hand.Add(card);
@@ -183,12 +179,11 @@ namespace Server.Game {
 
                 answerCards.Add(answerCard);
                 player.Hand.Remove(answerCard);
-
-                AnswerPile.Enqueue(answerCard);
             }
 
             SubmittedAnswers.Add(new SubmittedCard {
                 PlayerId = connectionId,
+                PlayerName = player.Name,
                 AnswerCards = answerCards,
             });
         }

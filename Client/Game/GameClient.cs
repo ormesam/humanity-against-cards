@@ -202,7 +202,7 @@ namespace Client.Game {
         }
 
         public async Task Vote(SubmittedCard card) {
-            if (hasVoted) {
+            if (hasVoted || card.PlayerId == HubConnection.ConnectionId) {
                 return;
             }
 
