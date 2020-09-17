@@ -55,7 +55,7 @@
                 @if (gameClient.CurrentQuestion != null) {
                     <div class="centre-container">
                         <div class="playing-card inverse">
-                            <p>@gameClient.CurrentQuestion.Text.Replace("\n", "<br />").Replace("_", "_______")</p>
+                            <p>@((MarkupString)gameClient.CurrentQuestion.Text.Replace("_", "_______"))</p>
                             <div class="footer">
                                 <p>@gameClient.Timer</p>
                             </div>
@@ -72,7 +72,7 @@
                     <div class="centre-container cards">
                         @foreach (var card in gameClient.Hand) {
                             <div class="playing-card @(card.IsSelected ? " submitted" : "" )" @onclick="@(i => HandCardClicked(card))">
-                                <p>@card.Text</p>
+                                <p>@((MarkupString)card.Text)</p>
                             </div>
                         }
                     </div>
@@ -90,11 +90,13 @@
                         @foreach (var submittedCard in gameClient.SubmittedAnswers) {
                             <div class="playing-card @(submittedCard.IsWinningCard ? " winning-card" : submittedCard.IsSelected ? "submitted" : "" )" @onclick="@(i => SubmittedCardClicked(submittedCard))">
                                 @foreach (var answer in submittedCard.AnswerCards) {
-                                    <p>@answer.Text</p>
+                                    <p>@((MarkupString)answer.Text)</p>
                                 }
 
                                 @if (submittedCard.IsWinningCard) {
-                                    <p>by @submittedCard.PlayerName</p>
+                                    <div class="footer">
+                                        <p>by @submittedCard.PlayerName</p>
+                                    </div>
                                 }
                             </div>
                         }

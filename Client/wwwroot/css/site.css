@@ -22,8 +22,8 @@ input[type=text] {
 }
 
 .playing-card {
-    width: 175px;
-    height: 250px;
+    width: 200px;
+    height: 275px;
     padding: 10px;
     border: solid 1px #a9a9a9;
     border-radius: 10px;
